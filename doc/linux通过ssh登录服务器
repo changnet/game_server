@@ -1,0 +1,17 @@
+一般在终端中ssh uname@192.168.1.1 -p 22就会以用户名uname登录服务器192.168.1.1，端口为22.
+1.ssh会在当前用户名下生成.ssh文件夹，没有就是从未用过ssh。
+2.ssh登录其他服务器时，会扫描.ssh目录下的所有key。如果找到能认证的key直接登录。不会提示密码之类的。所以如果别人给了众多key，请把它们拷到这个目录即可
+3.如果key文件太多，可能会提示失败。这时ssh uname@192.168.1.1 -p 22 -i ~/.ssh/local.pub来指定key文件为~/.ssh/local.pub
+4.也可以直接配置文件.ssh/config.没有该文件自己创建(chmod 600)
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github
+
+Host server
+    HostName 服务器地址
+    User 登录用户名
+    port 22
+    IdentityFile ~/.ssh/server
+5.如果未指明端口，则用22.如果未指明用户名，则使用自己本机当前用户(如果用户名跟服务器一样)
+6.如果用户名不对permission deny(public key)

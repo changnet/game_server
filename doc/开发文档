@@ -1,0 +1,85 @@
+1./home/xzc/env_test/CMakeLists.txt:4: error: Cannot specify link libraries for target "env_test" which is not built by this project.
+    target_link_libraries(${PROJECT_NAME} ev)需要放在add_executable(${PROJECT_NAME} ${SRC_LIST})后
+
+2.SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+#if __cplusplus < 201103L
+#error This file requires compiler and library support for the \
+ISO C++ 2011 standard. This support is currently experimental, and must be \
+enabled with the -std=c++11 or -std=gnu++11 compiler options.
+#endif
+
+#endif
+3.The compiler defines _DEBUG when you specify the /MTd or /MDd option. These options specify debug versions of the C run-time library.
+4.g++ 编辑不同版本
+  ver = debug
+
+  ifeq ($(ver), debug)
+  ALL: test_d
+  CXXFLAGS = -c -g -Ddebug
+  else
+  ALL: test_r
+  CXXFLAGS = -c -O3 
+  endif
+
+make ver=debug或make ver=release
+
+5.产生coredump的条件:首先需要确认当前会话的ulimit –c，若为0，则不会产生对应的coredump，需要进行修改和设置。
+用ulimit -a查看，如果core file size          (blocks, -c) 0则为不产生core文件
+ulimit  -c unlimited  (可以产生coredump且不受大小限制)
+编译程序需要-g选项
+
+6.日志级别
+    DEBUG   :调试信息打印，在release版本无效.即时flush
+    INFO    :需要记录的信息，如玩家消耗、产出log。允许指定文件名
+    WARNING :警告信息，如系统玩家数量达到设定值，所占内存接近上限，某个功能耗时过长。检测到非法链接
+    ERROR   :出现错误，但系统尚能运行，如DB引擎写入Sql失败，读取配置失败。或检测到某个子功能异常
+    FATAL   :出现错误，系统不能正常运行，如分配内存失败、子进程关闭。服务器通常已crash
+
+log自己设置缓存，有超时、buff溢出时写入两种。采用freopen重用file description
+写一个类CLogger，重载<<，#define INFO(x)    CLogger<<x即可实现qDebug类似的流输入
+fwrite、fflush检测error == ENOSPC之类的错误
+单个buff最大3k
+
+7.按守护进程设置工作目录，重定向stderr,cerr之类的输出
+
+8.C++中string分为std::string和c string。c string在string.h中，c++对应包含文件#include <cstring>.std::string包含在#include <string>中
+
+9.ptrace不能调试
+1. 问题描述
+用QTCreater建立了一个纯C++的项目，但是在F5调试时，竟然提示ptrace不允许的操作，修改工程配置为Debug也不管用，经过网上搜索，原来还需要修改一下系统ptrace的配置。
+2. 解决办法
+临时性的解决方法
+$ sudo echo 0 > /proc/sys/kernel/yama/ptrace_scope
+这样不过重启电脑之后就又恢复成原来的样子了，一劳永逸的方法：
+$ sudo vi /etc/sysctl.d/10-ptrace.conf
+$ kernel.yama.ptrace_scope = 0
+重启电脑就好了，
+据说在Ubuntu 11.04之后都会出现这种问题，貌似是为了安全
+2.
+typedef enum 
+    {
+    OperationType_Accept = 0,		//
+    OperationType_Connect,			//
+    OperationType_Recv,				//	
+    OperationType_Send,				//
+    OperationType_Exit				//
+    }enOperationType;
+
+file description 3,times 17
+file description 3,times 16
+file description 3,times 15
+file description 3,times 14
+file description 3,times 13
+file description 3,times 12
+file description 3,times 11
+file description 3,times 10
+file description 3,times 9
+file description 3,times 8
+file description 3,times 7
+file description 3,times 6
+file description 3,times 5
+file description 3,times 4
+file description 3,times 3
+file description 3,times 2
+file description 3,times 1
+

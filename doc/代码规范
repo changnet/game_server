@@ -1,0 +1,70 @@
+目的：
+    1.美观，方便阅读
+    2.方便识别。小写并以_连接的为函数，大写开头的为自定义类型(类C、枚举E、结构体S)，变量带前缀(见下面具体说明).
+
+1.函数名：小写命名，多个单词用_连接,如get_player_id()
+2.类名：用大写C开头，每个单词首字母大写，其余小写，如CTcpSocket
+3.枚举:用大写E形状，每个单词首字母大写，其余小写
+enum EItem
+{
+    EITEM_NONE
+    EITEM_WEAPON    ＝ 100,
+    EITEM_ARMOR     ＝ 101,
+};
+
+4.结构体：用大写S开头，每个单词首字母大写，其余小写
+struct SWeapon
+{
+    UINT32 nID;    //nIdentify
+    UINT32 nAttack;
+};
+5.宏定义都使用大写，如#define BOOL    0
+6.typedef后需要加_t后缀。如非必要，在代码不用typedef
+typedef enum EItem
+{
+    ...
+}EITEM_T;
+typedef struct SWeapon SWeapon_t
+typedef通常是为了方便移植
+typedef UINT
+
+7.下面C++编程时通用的变量命名规范，全部使用小写：
+属性部分：
+全局变量 g_ 
+常量 c_ 
+c++类成员变量 m_ 
+静态变量 s_
+
+类型部分：
+指针 p 
+函数 fn 
+无效 v 
+句柄 h 
+长整型 l 
+布尔 b 
+浮点型（有时也指文件） f 
+双字 dw 
+字符串 sz 
+短整型 n 
+双精度浮点 d 
+计数 c（通常用cnt） 
+字符 ch（通常用c） 
+整型 i（通常用n） 
+字节 by 
+字 w 
+实型 r 
+无符号 u
+其他类型 以类型为前缀,
+
+描述部分：
+最大 max 
+最小 min 
+初始化 init 
+临时变量 t（或Temp） 
+源对象 src 
+目的对象 dest
+
+8.所有代码文件均为UTF-8无BOM
+9.制表符宽度为4，并且需要设置使用空格代替制表符，即按一次tab相当于4个空格。（这设置保证windows、linux，在VS、QtCreator、Eclipse、NotePad++、UltraEdit等各种编辑器下保持代码对齐）
+  建议编辑器字体使用等宽字体，这样每次缩进都为4个字符
+10.已经重定义的类型，不要再使用原类型。如：#define UINT32 int32_t,则不再使用int nHP,而是UINT32 nHP.这是为了方便程序移植准备，尤其是int64这种各个平台不同的数据类型

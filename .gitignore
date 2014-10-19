@@ -1,0 +1,5 @@
+.git
+libraries
+*.a
+*.o
+*~

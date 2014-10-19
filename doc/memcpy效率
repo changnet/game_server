@@ -1,0 +1,36 @@
+#include <iostream>
+#include <cstring>
+#include <ctime>
+
+using namespace std;
+
+#define BUFF_LEN    16*1024*1024
+
+int main()
+{
+    char *p = (char *)0;
+    p = new char[BUFF_LEN];
+
+    char *ptemp = p;
+    char buff[2014];
+
+    clock_t t;
+
+    t = clock();
+    memset( buff,'\0',1024 );
+    for ( int i = 0;i < 1024;i ++ )
+    {
+        memcpy( ptemp,buff,1024 );
+        ptemp += 1024;
+    }
+
+    t = clock() - t;
+
+    delete []p;
+
+    cout << "clock:" << t << " second:" << ((float)t)/CLOCKS_PER_SEC << endl;
+    cout << "Hello World!" << endl;
+    return 0;
+}
+
+这段代码测试，拷贝1024个大小为16中的内存，花费最大为 0.001800s以下，平均在0.001200s

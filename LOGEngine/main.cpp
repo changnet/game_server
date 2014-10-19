@@ -1,14 +1,34 @@
 #include <iostream>
-#include <cstring>
-#include <cerrno>
 #include "gslog.h"
 #include "gstypes.h"
+#include "CLogBackend.h"
 
-using namespace std;
-
-int main()
+/**
+ * @brief main
+ * @param argc
+ * @param argv
+ * @return
+ *
+ * LOGEngine will start like LOGEngine 16045 server1
+ *
+ * 程序名 主进程pid 服务器标识
+ */
+int32 main(int32 argc,char **argv)
 {
-    std::cout << "version:" << __cplusplus<< std::endl;
+    if ( argc != 3 )
+    {
+        GERROR() << "wrong param,LOGEngine exit\n";
+        return 0;
+    }
+
+    CLogBackend worker;
+
+    worker.set_self_name( argv[0] );
+    worker.set_center_pid( atoi(argv[1]) );
+    worker.set_server_id( argv[2] );
+
+    worker.start_work();
+    worker.end_work();
 
     return 0;
 }

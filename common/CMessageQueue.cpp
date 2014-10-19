@@ -5,6 +5,7 @@ CMessageQueue *CMessageQueue::m_pmsg = null;
 
 CMessageQueue::CMessageQueue()
 {
+    resize_free_msg();
 }
 
 void CMessageQueue::resize_free_msg()
@@ -86,7 +87,11 @@ CNetMessage *CMessageQueue::get_free_msg()
 {
     CNetMessage *pmsg = null;
     if ( m_free_msg.size() <= 0 )
+    {
         resize_free_msg();
+
+        GWARNING() << "CNetMessage deque size increase\n";
+    }
 
     pmsg = m_free_msg.front();
 

@@ -4,7 +4,8 @@ CONFIG += c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    CLogBackend.cpp
 
 INCLUDEPATH += ../common \
                ../libraries/boost_1_56_0
@@ -21,3 +22,6 @@ LIBS += ../common/CLogger.o \
         -lev \
         -pthread \   #not -lpthread
         -lrt
+
+HEADERS += \
+    CLogBackend.h

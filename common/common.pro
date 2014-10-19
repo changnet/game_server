@@ -22,7 +22,9 @@ SOURCES += main.cpp \
     CRorWSharedMemory.cpp \
     CMessageQueue.cpp \
     CPacket.cpp \
-    CNetMessage.cpp
+    CNetMessage.cpp \
+    CLogMessage.cpp \
+    CLogCache.cpp
 
 HEADERS += \
     CLogger.h \
@@ -38,5 +40,7 @@ HEADERS += \
     CRorWSharedMemory.h \
     CMessageQueue.h \
     CPacket.h \
-    CNetMessage.h
+    CNetMessage.h \
+    CLogMessage.h \
+    CLogCache.h
 

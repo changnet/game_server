@@ -3,8 +3,6 @@
 #include <cerrno>
 #include "gslog.h"
 #include "gstypes.h"
-#include "CSeamphoreLock.h"
-#include "CSharedMemory.h"
 
 using namespace std;
 

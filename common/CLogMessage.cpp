@@ -1,32 +1,206 @@
 #include "CLogMessage.h"
+#include <cstdio>         /* for snprintf */
 
-#include <cstring>
+#include "gslog.h"
 
 CLogMessage::CLogMessage()
 {
-    m_log_file_path[0] = '\0'; //初始化空字符串
+    m_path_length = 0;
 }
 
-char *CLogMessage::get_log_path()
+CLogMessage &CLogMessage::operator << ( uint8 val )
 {
-    return m_log_file_path;
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%hhu",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf uint8 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( int8 val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%hhd",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf int8 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( uint16 val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%hu",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf uint16 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( int16 val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%hd",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf int16 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( uint32 val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%u",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf uint32 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( int32 val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%d",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf int32 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( uint64 val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%llu",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf uint64 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( int64 val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%lld",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf int64 error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( float val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%f",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf float error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( double val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%f",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf double error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( const char *val )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%s",val);
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf char* error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
+}
+
+CLogMessage &CLogMessage::operator << ( string &str )
+{
+    int32 cx = snprintf(buff+length,MSG_LENGTH-length,"%s",str.c_str() );
+
+    if ( cx < 0 )
+    {
+        GERROR() << "snprintf string error\n";
+    }
+    else
+        length += cx;
+
+    return *this;
 }
 
 /**
- * @brief CLogMessage::set_log_path
+ * @brief CLogMessage::set_path
  * @param path
- *
- * 对于在一个进程间而言，log的路径基本是常量const char *，但如果路径是从脚本传进来
- * 或从共享内存得到，则必须copy一份
+ *        The  functions  snprintf()  and  vsnprintf()  write  at most size bytes
+ *     (including the terminating null byte ('\0')) to str
  */
-void CLogMessage::set_log_path(const char *path)
+void CLogMessage::set_path(const char *path)
 {
-    int32 length = strlen(path);
-    if ( 0 >= length )
+    int32 cx = snprintf(m_path,MAX_PATH,"%s",path);
+    if ( cx < 0 )
+    {
+        GERROR() << "error while set log message path\n";
+        m_path_length = 0;
         return;
+    }
 
-    length = length >= MAX_LOG_FILE_NAME_LENGTH ? MAX_LOG_FILE_NAME_LENGTH-1 : length;
+    m_path_length = cx;
+}
 
-    memcpy( m_log_file_path,path,length );
-    m_log_file_path[length+1] = '\0';
+const char *CLogMessage::get_path()
+{
+    return m_path;
+}
+
+uint32 CLogMessage::get_path_length()
+{
+    return m_path_length;
 }

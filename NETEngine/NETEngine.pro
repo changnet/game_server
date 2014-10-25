@@ -20,11 +20,11 @@ INCLUDEPATH += ../common \
                ../libraries/boost_1_56_0
 
 LIBS += ../common/CLogger.o \
-        ../common/CSingletonLog.o \
-        ../common/CErrorLog.o \
+        ../common/CLogMessage.o \
         ../common/CPacket.o \
         ../common/CNetMessage.o \
         ../common/CServerSetting.o \
         ../common/CMessageQueue.o \
         ../common/CProcess.o \
+        ../common/CLogFile.o \
         -lev

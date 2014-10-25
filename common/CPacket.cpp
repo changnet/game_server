@@ -11,8 +11,7 @@ CPacket::CPacket()
  */
 void CPacket::zero()
 {
-    m_buff_length = 0;
-    m_current_pos = 0;
+    length = 0;
 }
 
 /**
@@ -26,21 +25,12 @@ void CPacket::truncate()
 }
 
 /**
- * @brief CPacket::get_buff
- * @return 缓冲区指针
- */
-char *CPacket::get_buff()
-{
-    return buff;
-}
-
-/**
  * @brief CPacket::get_length
  * @return 获取缓冲区数据长度
  */
 uint32 CPacket::get_length()
 {
-    return m_buff_length;
+    return length;
 }
 
 /**
@@ -50,7 +40,7 @@ uint32 CPacket::get_length()
  */
 uint32 CPacket::add_length(uint32 length)
 {
-    return m_buff_length += length;
+    return length += length;
 }
 
 /**
@@ -62,5 +52,5 @@ uint32 CPacket::add_length(uint32 length)
  */
 uint32 CPacket::set_length(uint32 length)
 {
-    return m_buff_length = length;
+    return length = length;
 }

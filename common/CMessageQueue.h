@@ -38,6 +38,7 @@ public:
 
 private:
     CMessageQueue();
+    ~CMessageQueue();
     void resize_free_msg();
 
 private:

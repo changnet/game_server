@@ -1,8 +1,25 @@
 #include "CLogFile.h"
-#include <cstdio>    //for stderr
+
+CLogFile *CLogFile::m_plog_file = null;
 
 CLogFile::CLogFile()
 {
+}
+
+CLogFile &CLogFile::instance()
+{
+    if ( null == m_plog_file )
+        m_plog_file = new CLogFile();
+
+    return *m_plog_file;
+}
+
+void CLogFile::unistance()
+{
+    if ( m_plog_file )
+        delete m_plog_file;
+
+    m_plog_file = null;
 }
 
 std::ostream &CLogFile::error()
@@ -19,7 +36,7 @@ std::ostream &CLogFile::fatal()
     return std::cerr;
 }
 
-CLogFile &CLogFile::log_file(const string &path)
+CLogFile &CLogFile::log_file(const string &path, bool print)
 {
     if ( m_file.is_open() )  //last time not close
         m_file.close();
@@ -31,20 +48,8 @@ CLogFile &CLogFile::log_file(const string &path)
         error() << "open file \"" << path << "\" fail:" << strerror( errno ) << "\n";
     }
 
+    m_print = print;
     //如果打开失败，则<<操作什么都不做
-    return *this;
-}
-
-template<typename T>
-CLogFile &CLogFile::operator << ( T &t )
-{
-    m_file << t;
-
-    if ( m_file.fail() || m_file.bad() )  //see http://www.cplusplus.com/reference/ostream/ostream/operator<</
-    {
-        error() << "write file<" << m_path << "> fail:" << strerror( errno ) << "\n";
-    }
-
     return *this;
 }
 
@@ -56,6 +61,9 @@ CLogFile &CLogFile::operator << ( T &t )
  */
 void CLogFile::operator << ( std::ostream& (*pf)(std::ostream&) )
 {
+    if ( m_print )
+        pf( std::cout );
+
     pf( m_file );
     m_file.close();
 }

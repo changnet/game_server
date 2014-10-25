@@ -9,15 +9,11 @@ using namespace std;
 
 int main(int32 argc,char **argv)
 {
-    CProcess::set_process_name( argv[0] );
 
     CNetBackend worker;
 
     worker.start_work();
     worker.end_work();
-
-    CErrorLog::uninstance();
-    CSingletonLog::uninstance();
 
     return 0;
 }

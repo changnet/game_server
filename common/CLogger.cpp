@@ -1,138 +1,76 @@
 #include "CLogger.h"
+
 #include "gslog.h"
-#include <exception>
-#include <cstdio>
-#include <cerrno>
-#include <cstring>
 
 CLogger::CLogger()
 {
-}
-
-CLogger::CLogger(const string _path)
-{
-    m_file_path = _path;
+    resize_free_packet();  //预分配空间
 }
 
 CLogger::~CLogger()
 {
-    close_log();
-}
-
-bool CLogger::close_log()
-{
-    m_file_path.clear();
-
-    if ( m_file.is_open() )
+    deque<CLogMessage*>::iterator itr = m_free_msg.begin();
+    while ( itr != m_free_msg.end() )
     {
-        m_file.close();  //close file will fflush
-        return true;
+        delete *itr;
+        itr ++;
     }
 
-    return false;
+    deque<CLogMessage*>::iterator itr_cache = m_cache_msg.begin();
+    while ( itr_cache != m_cache_msg.end() )
+    {
+        delete *itr_cache;
+        itr_cache ++;
+    }
 }
 
-/*
- * close file stream but not clear file path so can open again
- */
-bool CLogger::close_file()
+void CLogger::resize_free_packet()
 {
-    if ( m_file.is_open() )
+    CLogMessage *p = null;
+    int32 size = PACKET_SIZE;
+
+    while ( size > 0 )
     {
-        m_file.close();  //close file will fflush
-        return true;
+        p = new CLogMessage();
+        p->zero();
+
+        m_free_msg.push_back( p );
+
+        size --;
+    }
+}
+
+CLogMessage &CLogger::message(const char *path)
+{
+    if ( m_free_msg.empty() )
+    {
+        resize_free_packet();
+        GWARNING() << "log message deque resize occure\n";
     }
 
-    return false;
+    CLogMessage *p = m_free_msg.front();
+    m_free_msg.pop_front();
+
+    p->set_path( path );
+    m_cache_msg.push_back( p );
+
+    return *p;
 }
 
-
-bool CLogger::open_log()
+void CLogger::read_log_from_shm()
 {
-    if ( m_file_path.empty() )  //whether its length is 0
-        return false;
+}
 
-
-    m_file.open ( m_file_path.c_str(), ofstream::out | ofstream::app | ofstream::binary );
-
-    if ( m_file.fail() ) //print why
+void CLogger::write_log_to_shm()
+{
+    deque<CLogMessage*>::iterator itr = m_cache_msg.begin();
+    while ( itr != m_cache_msg.end() )
     {
-        GERROR() << "open file \"" << m_file_path << "\" fail:" << strerror( errno ) << "\n";
-        return false;
+        std::cout << "file:" << (*itr)->get_path() << " content:" << (*itr)->buff << std::endl;
+        itr ++;
+
+        m_free_msg.push_back( *itr );  //写入了就交给空闲处理
     }
 
-    return true;
+    m_cache_msg.clear();
 }
-
-void CLogger::flush()
-{
-    if ( m_file.is_open() )
-        m_file.flush( );
-}
-
-const string CLogger::get_log_file_path()
-{
-    return m_file_path;
-}
-
-const string CLogger::set_log_file_path( const string _path )
-{
-    return m_file_path = _path;
-}
-
-bool CLogger::write_log(const char *buff)
-{
-    if ( m_file.is_open() || open_log() )
-    {
-        int32 len = strlen( buff );
-        if ( len > MAXLOGLENGTH )
-        {
-            char szTruncation[ MAXLOGLENGTH ];
-            memcpy( szTruncation,buff,MAXLOGLENGTH - 1 );
-            szTruncation[ MAXLOGLENGTH ] = '\0';
-
-            GERROR() << "log buff overflow,string truncation:" << szTruncation << "\n";
-            len = MAXLOGLENGTH;
-        }
-
-        m_file.write( buff,len );
-
-        if ( !m_file.good() )    //write file error
-        {
-            GERROR() << "write file error:" << strerror( errno ) <<"\n";
-            return false;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-bool CLogger::write_log( const string buff )
-{
-    if ( m_file.is_open() || open_log() )
-    {
-        if ( buff.size() > MAXLOGLENGTH )
-        {
-            const string substring = buff.substr( 0,MAXLOGLENGTH );
-            GERROR() << "log buff overflow,string truncation:" << substring << "\n";
-            m_file << substring;
-        }
-        else
-            m_file << buff;
-
-        if ( !m_file.good() )    //write file error
-        {
-            GERROR() << "write file error:" << strerror( errno ) <<"\n";
-            return false;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-
-

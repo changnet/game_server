@@ -110,8 +110,6 @@ void CNetBackend::add_socket( int32 fd,const struct sockaddr_in address )
 
     }
 
-    std::cout << "new fd:" <<fd<<endl;
-
     while ( (fd > static_cast<int32>(m_tcp_sockets.size()-1)) && (MAX_FD > m_tcp_sockets.size()) )  //-1数组下标从0开始
     {
         m_tcp_sockets.resize( DEFAULT_SOCKETS,null );

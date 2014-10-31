@@ -11,15 +11,25 @@
 #ifndef GSLOG_H
 #define GSLOG_H
 
-#include "CSingletonLog.h"
-#include "CErrorLog.h"
+#include "CLogFile.h"
 
 // first i define INFO WARNING ERROR FATAL,buf libev conflict,say "some systems stupidly #define ERROR"
 // G mean GAME
 
-#define GINFO(x)      CSingletonLog::log( x )
-#define GWARNING()    CSingletonLog::id_log( "warning.log" )
-#define GERROR()      CErrorLog::log()
-#define GFATAL()      CSingletonLog::id_log( "fatal.log" )
+#ifdef DEBUG
+
+    #define GINFO(x)      CLogFile::instance().log_file( x )
+    #define GWARNING()    CLogFile::instance().log_file( "waring.log",true )
+    #define GERROR()      CLogFile::instance().log_file( GERRORFILE,true )
+    #define GFATAL()      CLogFile::instance().log_file( GFATALFILE,true )
+
+#else
+
+    #define GINFO(x)      CLogFile::instance().log_file( x )
+    #define GWARNING()    CLogFile::instance().log_file( "waring.log",false )
+    #define GERROR()      CLogFile::error()
+    #define GFATAL()      CLogFile::fatal()
+
+#endif //DEBUG
 
 #endif // GSLOG_H

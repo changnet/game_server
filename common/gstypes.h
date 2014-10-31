@@ -1,7 +1,18 @@
 /*
  * 服务器基本数据类型。
- *先将常用数据类型char short int long float 之类的转换为固定长度类型 type_t
- *再将type_t转换为一个简单易书写的类型
+ * 先将常用数据类型char short int long float 之类的转换为固定长度类型
+ *
+ * 在32/64bit系统下，8/16/32位数据基本不会有问题，但在32bit下，64位数据定义为long long int
+ * 在64bit下，64位数据定义为long int，但long long int仍为64位.因此，使用int64_t能保证是64bit
+ * 但对于sprintf之类的则仍会有警告。因此统一采用long long int。
+ * PC现在不用16bit，不用考虑int为16bit的情况
+ *
+ * 参考Qt:
+ * Typedef for signed char. This type is guaranteed to be 8-bit on all platforms supported by Qt.
+ * Typedef for signed short. This type is guaranteed to be 16-bit on all platforms supported by Qt.
+ * Typedef for signed int. This type is guaranteed to be 32-bit on all platforms supported by Qt.
+ * Typedef for long long int (__int64 on Windows). This type is guaranteed to be 64-bit on all platforms supported by Qt.
+ *
  *
  *about NULL,from Bjarne Stroustrup:
  *    In C++, the definition of NULL is 0, so there is only an aesthetic difference. I prefer to avoid macros,
@@ -10,6 +21,7 @@
  *and therefore had/has to be avoided. That's less common these days.
  *    If you have to name the null pointer, call it nullptr; that's what it's going to be called in C++0x.
  *Then, "nullptr" will be a keyword.
+ *
  */
 
 #ifndef __GSTYPES_H__
@@ -33,28 +45,39 @@
 //char short int long already typedef,see /usr/include/stdint.h for more
 
 /*
-//char
-typedef unsigned char        uint8_t;
-typedef signed char          int8_t;
-typedef char                 int8_t;
+// Exact integral types.
 
-//long
-typedef unsigned long         uint32_t;
-typedef signed long           int32_t;
-typedef long                  int32;
+// Signed.  //
 
-//int
-typedef unsigned int          uint32_t;
-typedef signed int            int32_t;
-typedef int                   int32_t;
-typedef unsigned short int    uint64_t;
-typedef short int             int64_t;
-typedef signed short int      int64_t;
+// There is some amount of overlap with <sys/types.h> as known by inet code //
+#ifndef __int8_t_defined
+# define __int8_t_defined
+typedef signed char		int8_t;
+typedef short int		int16_t;
+typedef int			int32_t;
+# if __WORDSIZE == 64
+typedef long int		int64_t;
+# else
+__extension__
+typedef long long int		int64_t;
+# endif
+#endif
 
-//short
-typedef unsigned short        uint16_t;
-typedef short                 int16_t;
-typedef signed short          int16_t;
+// Unsigned.  //
+typedef unsigned char		uint8_t;
+typedef unsigned short int	uint16_t;
+#ifndef __uint32_t_defined
+typedef unsigned int		uint32_t;
+# define __uint32_t_defined
+#endif
+#if __WORDSIZE == 64
+typedef unsigned long int	uint64_t;
+#else
+__extension__
+typedef unsigned long long int	uint64_t;
+#endif
+
+
 
 */
 
@@ -65,8 +88,8 @@ typedef uint16_t      uint16;
 typedef int16_t        int16;
 typedef uint32_t      uint32;
 typedef int32_t        int32;
-typedef uint64_t      uint64;
-typedef int64_t        int64;
+typedef unsigned long long int	uint64;
+typedef long long int	int64;
 
 /*
  * use std::string instead of C strings,you may use char array like char buff[].don.t use c type strings in cstring(string.h)

@@ -1,0 +1,4 @@
+服务器避免使用一些存在隐患的函数，在开发过程及布署时应该重新查：
+1.使用snprintf而不是sprintf
+2.使用localtime_r 而不是localtime
+3.使用libev的时间函数而不是time()

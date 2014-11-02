@@ -1,6 +1,7 @@
 #include "CLogger.h"
-
 #include "gslog.h"
+
+CLogger *CLogger::m_p_logger = null;
 
 CLogger::CLogger()
 {
@@ -27,7 +28,7 @@ CLogger::~CLogger()
 void CLogger::resize_free_packet()
 {
     CLogMessage *p = null;
-    int32 size = PACKET_SIZE;
+    int32 size = LOG_MSG_SIZE;
 
     while ( size > 0 )
     {
@@ -73,4 +74,20 @@ void CLogger::write_log_to_shm()
     }
 
     m_cache_msg.clear();
+}
+
+CLogger &CLogger::instance()
+{
+    if ( null == m_p_logger )
+        m_p_logger = new CLogger();
+
+    return *m_p_logger;
+}
+
+void CLogger::uninstance()
+{
+    if ( m_p_logger )
+        delete m_p_logger;
+
+    m_p_logger = null;
 }

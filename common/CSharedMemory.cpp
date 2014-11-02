@@ -3,7 +3,7 @@
 CSharedMemory::CSharedMemory()
 {
     m_shm_fd = 0;
-    m_shm_name    = null;
+    m_shm_name[0] = '\0';
 }
 
 void CSharedMemory::close_shm()
@@ -15,19 +15,20 @@ void CSharedMemory::close_shm()
         shm_unlink( m_shm_name );
 
     m_shm_fd = 0;
-    m_shm_name = null;
+    m_shm_name[0] = '\0';
 
 }
 
 bool CSharedMemory::open_shm( const char *name, int32 oflag, mode_t mode )
 {
-    m_shm_fd = shm_open( name,oflag,mode );
+    if ( snprintf(m_shm_name,SHM_NAME_LEN,"%s",name) < 0 )
+        return false;
+
+    m_shm_fd = shm_open( m_shm_name,oflag,mode );
     if ( -1 == m_shm_fd )
     {
         return false;
     }
-
-    m_shm_name = name;
 
     struct stat st;
     if ( fstat( m_shm_fd,&st ) < 0 )

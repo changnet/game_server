@@ -17,12 +17,7 @@
 
 #define SHM_PAGE_SIZE    67108864          //64M,必须是_SC_PAGE_SIZE的倍数
 #define SHM_RW_SIZE      SHM_PAGE_SIZE/2   //读写BUFF一分为2
-
-enum ESharedMemoryType
-{
-    ESHMT_MASTER,
-    ESHMT_SLAVE
-};
+#define SHM_NAME_LEN     128
 
 class CSharedMemory
 {
@@ -31,14 +26,13 @@ public:
 
     bool open_shm( const char *name, int32 oflag, mode_t mode );
     void close_shm();
-    virtual bool map_shm( ESharedMemoryType type ) = 0;
 
     int32 get_file_description();
     const char *get_shm_name();
 
 private:
     int32 m_shm_fd;
-    const char *m_shm_name;
+    char m_shm_name[SHM_NAME_LEN];
 };
 
 #endif // CSHAREDMEMORY_H

@@ -1,4 +1,10 @@
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "CLogFile.h"
+
+#include "CUtility.h"
+#include "main.h"
 
 CLogFile *CLogFile::m_plog_file = null;
 
@@ -26,6 +32,8 @@ std::ostream &CLogFile::error()
 {
     std::freopen ( GERRORFILE,FILEFLAG,stderr );  //redirect cerr
 
+    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance().str_time() << ":";
+
     return std::cerr;
 }
 
@@ -33,10 +41,21 @@ std::ostream &CLogFile::fatal()
 {
     std::freopen ( GFATALFILE,FILEFLAG,stderr );  //redirect cerr
 
+    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance().str_time() << ":";
+
     return std::cerr;
 }
 
-CLogFile &CLogFile::log_file(const string &path, bool print)
+std::ostream &CLogFile::warning()
+{
+    std::freopen ( GWARNINGFILE,FILEFLAG,stderr );  //redirect cerr
+
+    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance().str_time() << ":";
+
+    return std::cerr;
+}
+
+CLogFile &CLogFile::log_file(const string &path)
 {
     if ( m_file.is_open() )  //last time not close
         m_file.close();
@@ -48,8 +67,6 @@ CLogFile &CLogFile::log_file(const string &path, bool print)
         error() << "open file \"" << path << "\" fail:" << strerror( errno ) << "\n";
     }
 
-    m_print = print;
-    //如果打开失败，则<<操作什么都不做
     return *this;
 }
 
@@ -61,9 +78,6 @@ CLogFile &CLogFile::log_file(const string &path, bool print)
  */
 void CLogFile::operator << ( std::ostream& (*pf)(std::ostream&) )
 {
-    if ( m_print )
-        pf( std::cout );
-
     pf( m_file );
     m_file.close();
 }

@@ -11,6 +11,7 @@
 
 #define GERRORFILE    "error.log"
 #define GFATALFILE    "fatal.log"
+#define GWARNINGFILE  "warning.log"
 #define FILEFLAG      "ab+"
 
 
@@ -22,7 +23,8 @@ public:
 
     static std::ostream &error();
     static std::ostream &fatal();
-    CLogFile &log_file(const string &path,bool print = false);
+    static std::ostream &warning();
+    CLogFile &log_file(const string &path);
 
     /*  C++ 模板不支持分离实现 */
     template<typename T>

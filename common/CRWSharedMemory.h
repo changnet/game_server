@@ -13,7 +13,7 @@ class CRWSharedMemory : public CSharedMemory
 public:
     CRWSharedMemory();
 
-    bool map_shm( ESharedMemoryType type );
+    bool map_shm( int32 type );
 
 private:
     void *m_read_buff;

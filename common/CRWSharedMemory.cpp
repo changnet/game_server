@@ -15,10 +15,10 @@ CRWSharedMemory::CRWSharedMemory()
  *     cussion of the file /proc/sys/vm/overcommit_memory in proc(5).  In kernels before 2.6, this flag had effect only for private writable
  *     mappings.
  */
-bool CRWSharedMemory::map_shm(ESharedMemoryType type)
+bool CRWSharedMemory::map_shm(int32 type)
 {
     int32 shm_fd = get_file_description();
-    if ( ESHMT_MASTER == type )
+    if ( 1 == type )
     {
         m_read_buff  = mmap( null,SHM_RW_SIZE,PROT_READ,MAP_SHARED | MAP_NORESERVE,shm_fd,0 );
         m_write_buff = mmap( null,SHM_RW_SIZE,PROT_WRITE,MAP_SHARED | MAP_NORESERVE,shm_fd,SHM_RW_SIZE );

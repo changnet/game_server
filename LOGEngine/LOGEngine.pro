@@ -12,16 +12,15 @@ INCLUDEPATH += ../common \
 
 LIBS += ../common/CLogger.o \
         ../common/CLogMessage.o \
-        ../common/CServerSetting.o \
         ../common/CPacket.o \
-        ../common/CNetMessage.o \
-        ../common/CProcess.o \
         ../common/CSeamphoreLock.o \
         ../common/CSharedMemory.o \
         ../common/CLogFile.o \
+        ../common/CUtility.o \
         -lev \
         -pthread \   #not -lpthread
         -lrt
 
 HEADERS += \
-    CLogBackend.h
+    CLogBackend.h \
+    main.h

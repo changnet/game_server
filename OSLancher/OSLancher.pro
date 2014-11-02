@@ -13,7 +13,10 @@ INCLUDEPATH += ../common \
 LIBS += ../common/CLogger.o \
         ../common/CServerSetting.o \
         ../common/CLogMessage.o \
-        ../common/CProcess.o \
         ../common/CLogFile.o \
         ../common/CPacket.o \
+        ../common/CUtility.o \
         -lev
+
+HEADERS += \
+    main.h

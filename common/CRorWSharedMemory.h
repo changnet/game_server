@@ -14,7 +14,8 @@ class CRorWSharedMemory : public CSharedMemory
 public:
     CRorWSharedMemory();
 
-    bool map_shm(ESharedMemoryType type);
+    bool map_shm(int prot);
+    bool unmap_shm();
     void *get_shm_buff();
 
 private:

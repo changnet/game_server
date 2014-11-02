@@ -14,7 +14,8 @@ HEADERS += \
     CNetBackend.h \
     CListenSocket.h \
     gssocket.h \
-    CTcpSocket.h
+    CTcpSocket.h \
+    main.h
 
 INCLUDEPATH += ../common \
                ../libraries/boost_1_56_0
@@ -25,6 +26,6 @@ LIBS += ../common/CLogger.o \
         ../common/CNetMessage.o \
         ../common/CServerSetting.o \
         ../common/CMessageQueue.o \
-        ../common/CProcess.o \
         ../common/CLogFile.o \
+        ../common/CUtility.o \
         -lev

@@ -21,7 +21,7 @@ CNetBackend::~CNetBackend()
 
 void CNetBackend::start_work()
 {
-    uint32 port = static_cast<uint32>( CServerSetting::get_listen_port() );
+    uint32 port = static_cast<uint32>( CServerSetting::instance().get_listen_port() );
     m_plistenning_socket->set_listen_socket_port( port );
 
     if ( m_plistenning_socket->init_listen() )  //不管成功或失败，顶多程序就是不监听而已.失败在error.log有记录

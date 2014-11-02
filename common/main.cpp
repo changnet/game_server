@@ -11,7 +11,7 @@ int main()
 {
     cout << "version:" << __cplusplus<<endl;
 
-    GINFO( "user.txt" ) << "I coming soon" << endl;
+    GINFO( "user.txt" ) << "I coming soon";
     GWARNING() << "running out of time" << endl;
     GERROR() << "error comming" << endl;
     GFATAL() << "shutdown now ..." << endl;
@@ -30,10 +30,9 @@ int main()
     int64 t = 0;
     cout << sizeof( t ) << endl;
 
-    CLogger log;
-    log.message("money.txt") << val1 << val2 << val3 << val4 << val5 << val6 << val7 << val8 << p << str;
+    GINFO("money.txt") << val1 << val2 << val3 << val4 << val5 << val6 << val7 << val8 << p << str;
 
-    log.write_log_to_shm();
+    CLogger::instance().write_log_to_shm();
 
     return 0;
 }

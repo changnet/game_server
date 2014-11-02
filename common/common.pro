@@ -13,7 +13,6 @@ LIBS += -lev \
 SOURCES += main.cpp \
     CLogger.cpp \
     CServerSetting.cpp \
-    CProcess.cpp \
     CSeamphoreLock.cpp \
     CSharedMemory.cpp \
     CRWSharedMemory.cpp \
@@ -22,14 +21,15 @@ SOURCES += main.cpp \
     CPacket.cpp \
     CNetMessage.cpp \
     CLogMessage.cpp \
-    CLogFile.cpp
+    CLogFile.cpp \
+    CUtility.cpp \
+    CLogWorker.cpp
 
 HEADERS += \
     CLogger.h \
     gstypes.h \
     gslog.h \
     CServerSetting.h \
-    CProcess.h \
     CSeamphoreLock.h \
     CSharedMemory.h \
     CRWSharedMemory.h \
@@ -38,5 +38,8 @@ HEADERS += \
     CPacket.h \
     CNetMessage.h \
     CLogMessage.h \
-    CLogFile.h
+    CLogFile.h \
+    CUtility.h \
+    main.h \
+    CLogWorker.h
 

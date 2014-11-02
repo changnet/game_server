@@ -6,7 +6,8 @@ CDataBackend::CDataBackend()
 {
 }
 
-bool CDataBackend::start_log_engine()
+void CDataBackend::start()
 {
-
+    std::cout << "i am Data server,run..." << std::endl;
+    m_log_worker.run_log_engine();
 }

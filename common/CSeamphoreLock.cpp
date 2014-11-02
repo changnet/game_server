@@ -2,7 +2,7 @@
 
 CSeamphoreLock::CSeamphoreLock()
 {
-    m_sem_name = null;
+    m_sem_name[0] = '\0';
     m_psem = null;
 }
 
@@ -36,13 +36,15 @@ CSeamphoreLock::CSeamphoreLock()
 */
 bool CSeamphoreLock::open( const char *name,int32 oflag,mode_t mode, uint32 value  )
 {
-    m_psem = sem_open( name,oflag,mode,value );
+    if ( snprintf( m_sem_name,SEM_NAME_LEN,"%s",name ) < 0 )
+        return false;
+
+    m_psem = sem_open( m_sem_name,oflag,mode,value );
     if ( SEM_FAILED == m_psem )  //error
     {
         return false;
     }
 
-    m_sem_name = name;
     return true;
 }
 
@@ -87,12 +89,7 @@ int32 CSeamphoreLock::get_value()
 }
 
 
-int32 CSeamphoreLock::unlink()
-{
-    return sem_unlink( m_sem_name );
-}
-
 int32 CSeamphoreLock::close()
 {
-    return sem_close( m_psem );
+    return sem_close( m_psem ) & sem_unlink( m_sem_name );
 }

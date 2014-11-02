@@ -6,27 +6,32 @@
 #include <deque>
 
 #include "CLogMessage.h"
+#include "CLogFile.h"
 
 using std::deque;
 
-#define PACKET_SIZE    4096
+#define LOG_MSG_SIZE    4096
 
 class CLogger
 {
 public:
-    CLogger();
-    ~CLogger();
+    static CLogger &instance();
+    static void uninstance();
 
     void read_log_from_shm();
     void write_log_to_shm();
     CLogMessage &message(const char *path);
 
 private:    //function
+    CLogger();
+    ~CLogger();
     void resize_free_packet();
 private:
     deque<CLogMessage*> m_free_msg;
 
     deque<CLogMessage*> m_cache_msg;
+
+    static CLogger *m_p_logger;
 };
 
 

@@ -11,22 +11,22 @@
 #ifndef GSLOG_H
 #define GSLOG_H
 
-#include "CLogFile.h"
+#include "CLogger.h"
 
 // first i define INFO WARNING ERROR FATAL,buf libev conflict,say "some systems stupidly #define ERROR"
 // G mean GAME
 
 #ifdef DEBUG
 
-    #define GINFO(x)      CLogFile::instance().log_file( x )
-    #define GWARNING()    CLogFile::instance().log_file( "waring.log",true )
-    #define GERROR()      CLogFile::instance().log_file( GERRORFILE,true )
-    #define GFATAL()      CLogFile::instance().log_file( GFATALFILE,true )
+#define GINFO(x)      CLogger::instance().message(x)
+#define GWARNING()    std::cout<<"waring ocurred...\n";CLogFile::warning()
+#define GERROR()      std::cout<<"error ocurred...\n";CLogFile::error()
+#define GFATAL()      std::cout<<"fatal ocurred...\n";CLogFile::fatal()
 
 #else
 
-    #define GINFO(x)      CLogFile::instance().log_file( x )
-    #define GWARNING()    CLogFile::instance().log_file( "waring.log",false )
+    #define GINFO(x)      CLogger::instance().message(x)
+    #define GWARNING()    CLogFile::warning()
     #define GERROR()      CLogFile::error()
     #define GFATAL()      CLogFile::fatal()
 

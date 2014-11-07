@@ -24,6 +24,9 @@ bool CRorWSharedMemory::map_shm(int prot)
 
 bool CRorWSharedMemory::unmap_shm()
 {
+    if ( null == m_shm_buff || MAP_FAILED == m_shm_buff ) //可能未初始化，可能初始化失败
+        return true;
+
     int32 ret = munmap( m_shm_buff,SHM_PAGE_SIZE );
     if ( ret < 0 )
         return false;

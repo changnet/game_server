@@ -19,7 +19,7 @@ public:
     int32 try_lock();
     int32 time_lock( int32 nano_sec,int32 sec = 0 );  //Nanoseconds [0 .. 999999999]
     int32 unlock();
-    int32 get_value();
+    bool get_value(int32 sval);
     bool open( const char *name,int32 oflag,mode_t mode, uint32 value );
     int32 close();
 private:

@@ -42,12 +42,21 @@ bool CSeamphoreLock::open( const char *name,int32 oflag,mode_t mode, uint32 valu
     m_psem = sem_open( m_sem_name,oflag,mode,value );
     if ( SEM_FAILED == m_psem )  //error
     {
+        m_psem = null;
         return false;
     }
 
     return true;
 }
 
+/**
+ * @brief CSeamphoreLock::lock
+ * @return
+ * sem_post函数的作用是给信号量的值加上一个“1”，它是一个“原子操作”sem_wait函数也是一个原子操作，它的作用
+ * 是从信号量的值减去一个“1”，但它永远会先等待该信号量为一个非零值才开始做减法。也就是说，如果你对一个值
+ * 为2的信号量调用sem_wait(),线程将会继续执行，信号量的值将减到1。如果对一个值为0的信号量调用sem_wait()，
+ * 这个函数就会地等待直到有其它线程增加了这个值使它不再是0为止。
+ */
 int32 CSeamphoreLock::lock()
 {
     return sem_wait( m_psem );
@@ -78,18 +87,24 @@ int32 CSeamphoreLock::unlock()
  * blocked in sem_wait(3)
  * on error, -1 is returned and errno is set to indicate the error
  */
-int32 CSeamphoreLock::get_value()
+bool CSeamphoreLock::get_value( int32 sval )
 {
-    int32 sval = 0;
-
     if ( sem_getvalue( m_psem,&sval ) < 0 )
-        return -1;
+        return false;
 
-    return sval;
+    return true;
 }
 
 
 int32 CSeamphoreLock::close()
 {
-    return sem_close( m_psem ) & sem_unlink( m_sem_name );
+    if ( !m_psem )
+        return 0;
+
+    if ( sem_close( m_psem ) < 0 || sem_unlink( m_sem_name ) < 0 )
+        return -1;
+
+    m_psem = null;
+
+    return 0;
 }

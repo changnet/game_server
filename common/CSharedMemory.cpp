@@ -2,28 +2,29 @@
 
 CSharedMemory::CSharedMemory()
 {
-    m_shm_fd = 0;
+    m_shm_fd = -1;
     m_shm_name[0] = '\0';
 }
 
 void CSharedMemory::close_shm()
 {
-    if ( m_shm_fd )
-        close( m_shm_fd );
+    if ( m_shm_fd < 0 )
+        return;
 
-    if ( m_shm_name )
-        shm_unlink( m_shm_name );
+    close( m_shm_fd );
+    shm_unlink( m_shm_name );
 
-    m_shm_fd = 0;
+    m_shm_fd = -1;
     m_shm_name[0] = '\0';
 
 }
 
 bool CSharedMemory::open_shm( const char *name, int32 oflag, mode_t mode )
 {
-    if ( snprintf(m_shm_name,SHM_NAME_LEN,"%s",name) < 0 )
+    if ( snprintf(m_shm_name,SHM_NAME_LEN,"/%s",name) < 0 ) //must have /
         return false;
 
+    //On success, shm_open() returns a nonnegative file descriptor.maybe 0 ??
     m_shm_fd = shm_open( m_shm_name,oflag,mode );
     if ( -1 == m_shm_fd )
     {

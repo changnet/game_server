@@ -131,3 +131,15 @@ bool CLogWorker::run_log_engine()
     return false;  //never run to hero
 }
 
+bool CLogWorker::wait(uint32 nsec,uint32 sec)
+{
+    int ret = m_sem_lock.time_lock( nsec,sec );
+    if ( -1 == ret )
+        return false;
+
+    ret = m_sem_lock.unlock();
+    if ( -1 == ret )
+        return false;
+
+    return true;
+}

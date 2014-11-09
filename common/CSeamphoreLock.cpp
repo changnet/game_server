@@ -1,5 +1,7 @@
 #include "CSeamphoreLock.h"
 
+#define NSECTOSEC    1000000000    //nano second 转换为 second
+
 CSeamphoreLock::CSeamphoreLock()
 {
     m_sem_name[0] = '\0';
@@ -67,11 +69,27 @@ int32 CSeamphoreLock::try_lock()
     return sem_trywait( m_psem );
 }
 
+/**
+ * @brief CSeamphoreLock::time_lock
+ * @param nano_sec  纳秒
+ * @param sec  秒
+ * @return
+ *
+ * 如果传入参数溢出，则会造成立即返回或等待时间不正确
+ */
 int32 CSeamphoreLock::time_lock( int32 nano_sec,int32 sec )
 {
     struct timespec ts;
-    ts.tv_sec  = sec;
-    ts.tv_nsec = nano_sec;
+
+    if ( clock_gettime( CLOCK_REALTIME,&ts ) < 0 )
+        return -1;
+
+    ts.tv_sec  += sec;
+    ts.tv_nsec += nano_sec;
+
+    //#define NSECTOSEC    1000000000
+    ts.tv_sec += ts.tv_nsec/NSECTOSEC; //Nanoseconds [0 .. 999999999]
+    ts.tv_nsec = ts.tv_nsec%NSECTOSEC;
 
     return sem_timedwait( m_psem,&ts );
 }

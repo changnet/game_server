@@ -14,6 +14,7 @@ public:
 
     bool init(int32 shm_flag, int32 sem_flag, int32 prot, int32 mode);
     bool run_log_engine();
+    bool wait(uint32 nsec, uint32 sec);
     void uninit();
 
 private:

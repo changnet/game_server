@@ -1,4 +1,5 @@
 #include "CSharedMemory.h"
+#include <iostream>
 
 CSharedMemory::CSharedMemory()
 {

@@ -39,6 +39,8 @@ int  CLogBackend::get_center_pid()
 
 void CLogBackend::start_work()
 {
+    m_log_worker.init( O_CREAT | O_RDWR,S_IRUSR,O_CREAT | O_RDWR,S_IWUSR | S_IRUSR ,PROT_WRITE );
+    m_log_worker.unwait();
 }
 
 void CLogBackend::end_work()

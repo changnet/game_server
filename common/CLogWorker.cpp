@@ -29,7 +29,7 @@ void CLogWorker::uninit()
  * master O_CREAT | O_EXCL,O_CREAT | O_EXCL,PROT_WRITE,S_IWUSR
  * 本函数只能初始化一次
  */
-bool CLogWorker::init(int32 shm_flag, int32 sem_flag, int32 prot,int32 mode)
+bool CLogWorker::init(int32 shm_flag,int32 shm_mode, int32 sem_flag,int32 sem_mode,int32 map_prot)
 {
     char tmp_buff[CONFIG_LENGTH];
 
@@ -50,7 +50,7 @@ bool CLogWorker::init(int32 shm_flag, int32 sem_flag, int32 prot,int32 mode)
     /* O_CREAT | O_EXCL防止错误使用了其他进程的shm
      * 这里初始化信号量为0，让本进程无法锁定。log进程初始化时+1会解锁
      */
-    if ( !m_sem_lock.open( tmp_buff,sem_flag,mode,0 ) )
+    if ( !m_sem_lock.open( tmp_buff,sem_flag,sem_mode,0 ) )
     {
         GFATAL() << "fail to init log sem:" << strerror( errno ) << std::endl;
         return false;
@@ -61,7 +61,7 @@ bool CLogWorker::init(int32 shm_flag, int32 sem_flag, int32 prot,int32 mode)
         GFATAL() << "snprintf error while set sem id\n";
         return false;
     }
-    if ( !m_shm.open_shm( tmp_buff,shm_flag,mode ) )
+    if ( !m_shm.open_shm( tmp_buff,shm_flag,shm_mode ) )
     {
         uninit();
 
@@ -69,7 +69,7 @@ bool CLogWorker::init(int32 shm_flag, int32 sem_flag, int32 prot,int32 mode)
         return false;
     }
 
-    if ( !m_shm.map_shm( prot ) )
+    if ( !m_shm.map_shm( map_prot ) )
     {
         uninit();
 
@@ -139,6 +139,14 @@ bool CLogWorker::wait(uint32 nsec,uint32 sec)
 
     ret = m_sem_lock.unlock();
     if ( -1 == ret )
+        return false;
+
+    return true;
+}
+
+bool CLogWorker::unwait()
+{
+    if ( m_sem_lock.unlock() < 0 )
         return false;
 
     return true;

@@ -12,9 +12,10 @@ class CLogWorker
 public:
     CLogWorker();
 
-    bool init(int32 shm_flag, int32 sem_flag, int32 prot, int32 mode);
+    bool init(int32 shm_flag, int32 shm_mode, int32 sem_flag, int32 sem_mode, int32 map_prot);
     bool run_log_engine();
     bool wait(uint32 nsec, uint32 sec);
+    bool unwait();
     void uninit();
 
 private:

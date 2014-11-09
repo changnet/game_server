@@ -3,6 +3,7 @@
 
 #include "gstypes.h"
 #include "CSeamphoreLock.h"
+#include "CLogWorker.h"
 
 class CLogBackend
 {
@@ -25,6 +26,8 @@ private:
     const char *m_self_name;
     const char *m_server_id;
     int32 m_center_pid;
+
+    CLogWorker m_log_worker;
 };
 
 #endif // CLOGBACKEND_H

@@ -40,6 +40,5 @@ HEADERS += \
     CLogMessage.h \
     CLogFile.h \
     CUtility.h \
-    main.h \
     CLogWorker.h
 

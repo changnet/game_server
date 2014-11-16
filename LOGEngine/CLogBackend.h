@@ -2,32 +2,26 @@
 #define CLOGBACKEND_H
 
 #include "gstypes.h"
-#include "CSeamphoreLock.h"
 #include "CLogWorker.h"
+#include "ev++.h"
+
+#define LOGBACKEND_TIME    0.05    //log进程运行速度
 
 class CLogBackend
 {
 public:
     CLogBackend();
 
-    void set_self_name(const char *name);
-    const char *get_self_name();
-
-    void set_server_id(const char *id);
-    const char *get_server_id();
-
-    void set_center_pid(int32 pid);
-    int  get_center_pid();
-
     void start_work();
     void end_work();
 
 private:
-    const char *m_self_name;
-    const char *m_server_id;
-    int32 m_center_pid;
+    void backend( ev::timer &w, int32 revents );
 
+private:
     CLogWorker m_log_worker;
+    ev::timer m_log_timer;
+    struct ev_loop *loop;
 };
 
 #endif // CLOGBACKEND_H

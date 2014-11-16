@@ -1,6 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define ENGINE_NAME    "LogEngine"
+const char *ENGINE_NAME = "LOGEngine";
 
 #endif // MAIN_H

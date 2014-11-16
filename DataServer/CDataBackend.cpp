@@ -4,11 +4,11 @@
 
 CDataBackend::CDataBackend()
 {
+    loop = EV_DEFAULT;
 }
 
 void CDataBackend::start()
 {
-    std::cout << "i am Data server,run..." << std::endl;
     /* shm需要S_IRUSR|S_IWUSR，因为这里是创建，本进程不需要读，其他进程需要。否则其他进程Permission denied
      * shm标识为O_WRONLY会导致mmap失败，因为需要读取一些信息，如大小
      */
@@ -21,5 +21,20 @@ void CDataBackend::start()
     else
         std::cout << "lock init timeout\n";
 
+    m_loop_timer.set< CDataBackend,&CDataBackend::backend >(this);
+    m_loop_timer.set( DATABACKEND_TIME,DATABACKEND_TIME );
+    m_loop_timer.start();
+
     m_log_worker.uninit();
+
+    ev_run( loop,0 );
+}
+
+void CDataBackend::backend(ev::timer &w, int32 revents)
+{
+    if ( EV_ERROR & revents )
+    {
+        GFATAL() << "backend error:" << strerror(errno) << "\n";
+        w.stop();
+    }
 }

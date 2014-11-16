@@ -4,7 +4,8 @@
 #include "CLogFile.h"
 
 #include "CUtility.h"
-#include "main.h"
+
+extern const char* ENGINE_NAME;
 
 CLogFile *CLogFile::m_plog_file = null;
 

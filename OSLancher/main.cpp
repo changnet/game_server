@@ -12,6 +12,7 @@
 #include "gstypes.h"
 #include "gslog.h"
 #include "CServerSetting.h"
+#include "main.h"
 
 using namespace std;
 

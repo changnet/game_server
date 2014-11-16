@@ -1,6 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define ENGINE_NAME    "NetEngine"
+const char *ENGINE_NAME = "NetEngine";
 
 #endif // MAIN_H

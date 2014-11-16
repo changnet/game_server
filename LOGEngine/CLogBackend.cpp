@@ -2,47 +2,30 @@
 
 CLogBackend::CLogBackend()
 {
-    m_self_name  = null;
-    m_center_pid = 0;
-    m_server_id  = null;
-}
-
-void CLogBackend::set_self_name(const char *name)
-{
-    m_self_name = name;
-}
-
-const char *CLogBackend::get_self_name()
-{
-    return m_self_name;
-}
-
-void CLogBackend::set_server_id(const char *id)
-{
-    m_server_id = id;
-}
-
-const char *CLogBackend::get_server_id()
-{
-    return m_server_id;
-}
-
-void CLogBackend::set_center_pid(int32 pid)
-{
-    m_center_pid = pid;
-}
-
-int  CLogBackend::get_center_pid()
-{
-    return m_center_pid = 0;
+    loop = EV_DEFAULT;
 }
 
 void CLogBackend::start_work()
 {
-    m_log_worker.init( O_CREAT | O_RDWR,S_IRUSR,O_CREAT | O_RDWR,S_IWUSR | S_IRUSR ,PROT_WRITE );
+    m_log_worker.init( O_CREAT | O_RDWR,S_IRUSR,O_CREAT | O_RDWR,S_IWUSR | S_IRUSR,PROT_WRITE );
     m_log_worker.unwait();
+
+    m_log_timer.set< CLogBackend,&CLogBackend::backend >(this);
+    m_log_timer.set( LOGBACKEND_TIME,LOGBACKEND_TIME );
+    m_log_timer.start();
+
+    ev_run( loop,0 );
 }
 
 void CLogBackend::end_work()
 {
+}
+
+void CLogBackend::backend(ev::timer &w, int32 revents)
+{
+    if ( EV_ERROR & revents )
+    {
+        GFATAL() << "backend error:" << strerror(errno) << "\n";
+        w.stop();
+    }
 }

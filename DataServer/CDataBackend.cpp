@@ -2,8 +2,11 @@
 
 #include <unistd.h>
 
+#include "CUtility.h"
+
 CDataBackend::CDataBackend()
 {
+    m_counter = 0;
     loop = EV_DEFAULT;
 }
 
@@ -25,9 +28,9 @@ void CDataBackend::start()
     m_loop_timer.set( DATABACKEND_TIME,DATABACKEND_TIME );
     m_loop_timer.start();
 
-    m_log_worker.uninit();
-
     ev_run( loop,0 );
+
+    m_log_worker.uninit();
 }
 
 void CDataBackend::backend(ev::timer &w, int32 revents)
@@ -37,4 +40,10 @@ void CDataBackend::backend(ev::timer &w, int32 revents)
         GFATAL() << "backend error:" << strerror(errno) << "\n";
         w.stop();
     }
+
+    CUtility::instance()->update_time(); //先更新时间，防止是第一次时间不对
+
+
+    GINFO( "test.log" ) << "update ...." << ++m_counter;
+    m_log_worker.flush_log();
 }

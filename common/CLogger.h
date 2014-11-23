@@ -15,11 +15,13 @@ using std::deque;
 class CLogger
 {
 public:
-    static CLogger &instance();
+    static CLogger *instance();
     static void uninstance();
 
     void read_log_from_shm();
     void write_log_to_shm();
+    bool is_cache_full();
+    uint32 get_cache_size();
     CLogMessage &message(const char *path);
 
 private:    //function

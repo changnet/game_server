@@ -14,10 +14,11 @@
 class CUtility
 {
 public:
-    static CUtility &instance();
+    static CUtility *instance();
     static void unstance();
 
     const char *str_time();
+    time_t time();
     void update_time();
 
 private:

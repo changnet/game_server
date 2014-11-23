@@ -20,6 +20,7 @@ private:
     CLogWorker m_log_worker;
     struct ev_loop *loop;
     ev::timer m_loop_timer;
+    uint32 m_counter;
 };
 
 #endif // CDATABACKEND_H

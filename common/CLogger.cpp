@@ -52,6 +52,7 @@ CLogMessage &CLogger::message(const char *path)
     CLogMessage *p = m_free_msg.front();
     m_free_msg.pop_front();
 
+    p->zero();    //must clear old data
     p->set_path( path );
     m_cache_msg.push_back( p );
 
@@ -68,20 +69,21 @@ void CLogger::write_log_to_shm()
     while ( itr != m_cache_msg.end() )
     {
         std::cout << "file:" << (*itr)->get_path() << " content:" << (*itr)->buff << std::endl;
-        itr ++;
 
         m_free_msg.push_back( *itr );  //写入了就交给空闲处理
+
+        itr ++;  //放到free队列后才++
     }
 
     m_cache_msg.clear();
 }
 
-CLogger &CLogger::instance()
+CLogger *CLogger::instance()
 {
     if ( null == m_p_logger )
         m_p_logger = new CLogger();
 
-    return *m_p_logger;
+    return m_p_logger;
 }
 
 void CLogger::uninstance()
@@ -90,4 +92,24 @@ void CLogger::uninstance()
         delete m_p_logger;
 
     m_p_logger = null;
+}
+
+/**
+ * @brief CLogger::is_cache_full
+ * @return
+ * 缓存的日志是否已满，满了则需要强制写入缓冲区
+ */
+bool CLogger::is_cache_full()
+{
+    return m_cache_msg.size() > LOG_MSG_SIZE ? true : false;
+}
+
+/**
+ * @brief CLogger::get_cache_size
+ * @return
+ * 获取当前缓冲的日志消息数量
+ */
+uint32 CLogger::get_cache_size()
+{
+    return m_cache_msg.size();
 }

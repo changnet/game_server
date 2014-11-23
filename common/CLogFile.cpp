@@ -33,7 +33,7 @@ std::ostream &CLogFile::error()
 {
     std::freopen ( GERRORFILE,FILEFLAG,stderr );  //redirect cerr
 
-    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance().str_time() << ":";
+    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance()->str_time() << ":";
 
     return std::cerr;
 }
@@ -42,7 +42,7 @@ std::ostream &CLogFile::fatal()
 {
     std::freopen ( GFATALFILE,FILEFLAG,stderr );  //redirect cerr
 
-    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance().str_time() << ":";
+    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance()->str_time() << ":";
 
     return std::cerr;
 }
@@ -51,7 +51,7 @@ std::ostream &CLogFile::warning()
 {
     std::freopen ( GWARNINGFILE,FILEFLAG,stderr );  //redirect cerr
 
-    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance().str_time() << ":";
+    std::cerr << ENGINE_NAME << getpid() << "@" << CUtility::instance()->str_time() << ":";
 
     return std::cerr;
 }

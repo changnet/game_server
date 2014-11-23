@@ -64,6 +64,11 @@ int32 CSeamphoreLock::lock()
     return sem_wait( m_psem );
 }
 
+/**
+ * @brief CSeamphoreLock::try_lock
+ * @return
+ * on error, the value of  the semaphore  is left unchanged, -1 is returned
+ */
 int32 CSeamphoreLock::try_lock()
 {
     return sem_trywait( m_psem );
@@ -74,7 +79,7 @@ int32 CSeamphoreLock::try_lock()
  * @param nano_sec  纳秒
  * @param sec  秒
  * @return
- *
+ * on error, the value of  the semaphore  is left unchanged, -1 is returned
  * 如果传入参数溢出，则会造成立即返回或等待时间不正确
  */
 int32 CSeamphoreLock::time_lock( int32 nano_sec,int32 sec )

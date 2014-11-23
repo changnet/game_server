@@ -18,14 +18,14 @@
 
 #ifdef DEBUG
 
-#define GINFO(x)      CLogger::instance().message(x)
-#define GWARNING()    std::cout<<"waring ocurred...\n";CLogFile::warning()
-#define GERROR()      std::cout<<"error ocurred...\n";CLogFile::error()
-#define GFATAL()      std::cout<<"fatal ocurred...\n";CLogFile::fatal()
+#define GINFO(x)      CLogger::instance()->message(x)
+#define GWARNING()    std::cout<<"waring ...\n";CLogFile::warning()
+#define GERROR()      std::cout<<"error...\n";CLogFile::error()
+#define GFATAL()      std::cout<<"fatal...\n";CLogFile::fatal()
 
 #else
 
-    #define GINFO(x)      CLogger::instance().message(x)
+    #define GINFO(x)      CLogger::instance()->message(x)
     #define GWARNING()    CLogFile::warning()
     #define GERROR()      CLogFile::error()
     #define GFATAL()      CLogFile::fatal()

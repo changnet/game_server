@@ -17,6 +17,7 @@ class CLogMessage : public CPacket
 public:
     CLogMessage();
 
+    void zero();
     void set_path(const char *path);
     const char *get_path();
     uint32 get_path_length();

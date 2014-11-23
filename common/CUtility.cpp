@@ -28,12 +28,12 @@ CUtility::~CUtility()
 {
 }
 
-CUtility &CUtility::instance()
+CUtility *CUtility::instance()
 {
     if ( null == m_p_utility )
         m_p_utility = new CUtility();
 
-    return *m_p_utility;
+    return m_p_utility;
 }
 
 void CUtility::unstance()
@@ -47,6 +47,15 @@ void CUtility::unstance()
 const char *CUtility::str_time()
 {
     return sztime;
+}
+
+/**
+ * @brief CUtility::time
+ * @return current UTC timestamp
+ */
+time_t CUtility::time()
+{
+    return m_timestamp;
 }
 
 /**

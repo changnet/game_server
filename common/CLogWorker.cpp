@@ -6,6 +6,7 @@
 
 CLogWorker::CLogWorker()
 {
+    m_last_flush = 0;
 }
 
 void CLogWorker::uninit()
@@ -131,6 +132,13 @@ bool CLogWorker::run_log_engine()
     return false;  //never run to hero
 }
 
+/**
+ * @brief CLogWorker::wait
+ * @param nsec
+ * @param sec
+ * @return
+ * 锁初始化为1，等子进程解锁后为0才能OK
+ */
 bool CLogWorker::wait(uint32 nsec,uint32 sec)
 {
     int ret = m_sem_lock.time_lock( nsec,sec );
@@ -150,4 +158,86 @@ bool CLogWorker::unwait()
         return false;
 
     return true;
+}
+
+/**
+ * @brief CLogWorker::flush
+ * 将缓冲的log写入缓冲区
+ */
+void CLogWorker::flush()
+{
+    CLogger::instance()->write_log_to_shm();
+
+    m_last_flush = CUtility::instance()->time();
+}
+
+/**
+ * @brief CLogWorker::try_flush
+ * 超时写入日志，如果发生竞争，则暂时不写入
+ */
+bool CLogWorker::try_flush()
+{
+    int32 ret = m_sem_lock.try_lock();
+    if ( -1 == ret )
+    {
+        if ( errno != EAGAIN )
+        {
+            GERROR() << "try flush log,lock fail:" << strerror( errno ) << std::endl;
+            return false;
+        }
+
+        return false;
+    }
+
+    flush();
+
+    m_sem_lock.unlock();
+
+    return true;
+}
+
+/**
+ * @brief CLogWorker::force_flush
+ * 强制写入日志，如果有竞争，将阻塞，适用于关服、缓冲区已满
+ */
+bool CLogWorker::force_flush()
+{
+    int32 ret = m_sem_lock.time_lock( 0,FORCE_LOCK_TIME );
+    if ( -1 == ret )
+    {
+        GERROR() << "force flush log,lock fail,log maybe lost:" << strerror( errno ) << std::endl;
+        return false;
+    }
+
+    flush();
+
+    m_sem_lock.unlock();
+
+    return true;
+}
+
+/**
+ * @brief CLogWorker::flush_log
+ * @return
+ * 1 超时尝试写入
+ * 2 多次尝试后超时强制写入
+ * 3 缓冲区满写入
+ */
+bool CLogWorker::flush_log()
+{
+    CLogger *ploger = CLogger::instance();
+    if ( ploger->get_cache_size() <= 0 )  //无日志，无需写入.也算处理成功
+        return true;
+
+    if ( ploger->is_cache_full() )  //缓冲区已满，强制写入
+        return force_flush();
+
+    time_t interval = CUtility::instance()->time() - m_last_flush;
+    if ( interval > FORCE_LOG_INTERVAL )  //try多次后仍无法写入，需要强制写入
+        return force_flush();
+
+    if ( interval < TRY_LOG_INTERVAL )    //缓冲未超时，先不写入
+        return false;
+
+    return try_flush();  //尝试写入
 }

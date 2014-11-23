@@ -5,6 +5,12 @@
 
 CLogMessage::CLogMessage()
 {
+    zero();
+}
+
+void CLogMessage::zero()
+{
+    CPacket::zero();
     m_path_length = 0;
 }
 

@@ -162,11 +162,43 @@ bool CLogWorker::unwait()
 
 /**
  * @brief CLogWorker::flush
- * 将缓冲的log写入缓冲区
+ * 将缓冲的log写入共享内存
  */
 void CLogWorker::flush()
 {
-    CLogger::instance()->write_log_to_shm();
+    bool ret = false;
+    CLogger *plog = CLogger::instance();
+
+    deque<CLogMessage*> &cache_msg = plog->get_cache_msg();
+    deque<CLogMessage*>::iterator itr = cache_msg.begin();
+
+    while ( itr != cache_msg.end() )
+    {
+        CLogMessage *pmsg = *itr;
+        std::cout << "file:" << pmsg->get_path() << " content:" << pmsg->buff << std::endl;
+
+        /* 写入文件名 */
+        ret = m_shm.write_buff( pmsg->get_path(),pmsg->get_path_length() );
+        if ( !ret )
+        {
+            GFATAL() << "log shm buff overflow,log abort\n";
+            break;
+        }
+
+        /* 写入内容 */
+        ret = m_shm.write_buff( pmsg->buff,pmsg->get_length() );
+        if ( !ret )
+        {
+            GFATAL() << "log shm buff overflow,log abort\n";
+            break;
+        }
+
+        plog->add_free_msg( pmsg );  //写入了就交给空闲处理
+
+        itr ++;  //放到free队列后才++
+    }
+
+    cache_msg.clear();
 
     m_last_flush = CUtility::instance()->time();
 }

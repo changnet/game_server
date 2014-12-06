@@ -27,8 +27,10 @@
 #ifndef __GSTYPES_H__
 #define __GSTYPES_H__
 
-#include <cstdio>
-#include <string>
+#include <string>    /*  std::string */
+#include <cstring>   /*  for strerr */
+#include <cerrno>    /*  for errno  */
+#include <cassert>   /*  for assert */
 
 #ifdef NULL
 #undef NULL		/* in case <stdio.h> has defined it. or stddef.h */
@@ -92,7 +94,8 @@ typedef unsigned long long int	uint64;
 typedef long long int	int64;
 
 /*
- * use std::string instead of C strings,you may use char array like char buff[].don.t use c type strings in cstring(string.h)
+ * use std::string instead of C strings,you may use char array like char buff[].
+ * don.t use c type strings in cstring(string.h)
  * for my test,a std::string like "code\0more",c_str() return code\0,size() return 4.
  * test like this:
  * string strTest = "code\0more";

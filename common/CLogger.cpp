@@ -8,6 +8,7 @@ CLogger::CLogger()
     resize_free_packet();  //预分配空间
 }
 
+/* 释放内存 */
 CLogger::~CLogger()
 {
     deque<CLogMessage*>::iterator itr = m_free_msg.begin();
@@ -25,6 +26,7 @@ CLogger::~CLogger()
     }
 }
 
+/* 重新分配空闲包 */
 void CLogger::resize_free_packet()
 {
     CLogMessage *p = null;
@@ -41,6 +43,7 @@ void CLogger::resize_free_packet()
     }
 }
 
+/* 获取一个消息包对象，并设置log文件名 */
 CLogMessage &CLogger::message(const char *path)
 {
     if ( m_free_msg.empty() )
@@ -57,25 +60,6 @@ CLogMessage &CLogger::message(const char *path)
     m_cache_msg.push_back( p );
 
     return *p;
-}
-
-void CLogger::read_log_from_shm()
-{
-}
-
-void CLogger::write_log_to_shm()
-{
-    deque<CLogMessage*>::iterator itr = m_cache_msg.begin();
-    while ( itr != m_cache_msg.end() )
-    {
-        std::cout << "file:" << (*itr)->get_path() << " content:" << (*itr)->buff << std::endl;
-
-        m_free_msg.push_back( *itr );  //写入了就交给空闲处理
-
-        itr ++;  //放到free队列后才++
-    }
-
-    m_cache_msg.clear();
 }
 
 CLogger *CLogger::instance()
@@ -112,4 +96,17 @@ bool CLogger::is_cache_full()
 uint32 CLogger::get_cache_size()
 {
     return m_cache_msg.size();
+}
+
+/* 获取缓冲的log队列 */
+deque<CLogMessage*> &CLogger::get_cache_msg()
+{
+    return m_cache_msg;
+}
+
+void CLogger::add_free_msg(CLogMessage *pmsg)
+{
+    assert( null != pmsg );
+
+    m_free_msg.push_back( pmsg );
 }

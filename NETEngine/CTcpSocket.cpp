@@ -1,7 +1,5 @@
 #include "CTcpSocket.h"
 
-#include <cstring>
-#include <cerrno>
 #include "gslog.h"
 
 CTcpSocket::CTcpSocket()

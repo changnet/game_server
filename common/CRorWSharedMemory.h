@@ -1,6 +1,6 @@
 /*
  *
- * 仅读或写的共享内存缓冲区
+ * 仅读或写的共享内存缓冲区 uint32+数据区
  *
  */
 
@@ -14,12 +14,17 @@ class CRorWSharedMemory : public CSharedMemory
 public:
     CRorWSharedMemory();
 
-    bool map_shm(int prot);
+    bool map_shm(int32 prot);
     bool unmap_shm();
-    void *get_shm_buff();
+    void *get_shm_data_buff();
+    uint32 *get_cache_length();
+    bool write_buff( const void *src,uint32 length );
 
 private:
-    void *m_shm_buff;
+    void  *m_shm_buff;
+    uint32 *m_p_length;
+    char   *m_p_data;
+    uint32 m_data_size;
 };
 
 #endif // CRORWSHAREDMEMORY_H

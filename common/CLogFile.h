@@ -4,8 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>    /*  for stderr */
-#include <cstring>   /*  for strerr */
-#include <cerrno>    /*  for errno  */
 
 #include "gstypes.h"
 

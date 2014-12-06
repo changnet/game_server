@@ -34,8 +34,6 @@ ENGINE_NAME = "haha";
 
     GINFO("money.txt") << val1 << val2 << val3 << val4 << val5 << val6 << val7 << val8 << p << str;
 
-    CLogger::instance()->write_log_to_shm();
-
     return 0;
 }
 

@@ -1,5 +1,6 @@
 #include "CSharedMemory.h"
-#include <iostream>
+
+#include <cstdio>
 
 CSharedMemory::CSharedMemory()
 {
@@ -13,7 +14,7 @@ void CSharedMemory::close_shm()
         return;
 
     close( m_shm_fd );
-    shm_unlink( m_shm_name );
+    shm_unlink( m_shm_name );/* 本进程调用并不会影响其他进程 */
 
     m_shm_fd = -1;
     m_shm_name[0] = '\0';

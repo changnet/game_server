@@ -18,11 +18,12 @@ public:
     static CLogger *instance();
     static void uninstance();
 
-    void read_log_from_shm();
-    void write_log_to_shm();
     bool is_cache_full();
     uint32 get_cache_size();
+
+    void add_free_msg( CLogMessage *pmsg );
     CLogMessage &message(const char *path);
+    deque<CLogMessage*> &get_cache_msg();
 
 private:    //function
     CLogger();

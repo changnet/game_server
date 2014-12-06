@@ -1,7 +1,5 @@
 #include "CListenSocket.h"
 
-#include <cerrno>
-#include <cstring>
 #include "gslog.h"
 
 CListenSocket::CListenSocket()

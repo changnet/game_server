@@ -6,7 +6,6 @@
 #ifndef CPACKET_H
 #define CPACKET_H
 
-#include <cstring>  /* for memset */
 #include "gstypes.h"
 
 #define MSG_LENGTH    32768   //长度 32*1024

@@ -1,6 +1,12 @@
-libraries是所用到的第三方库，有些库是安装到系统中的。故这里只放对应版本压缩包备份
+    这是一个多进程的轻型游戏引擎。底层由C++编写，脚本采用lua。进程通信采用标准POSIX内存共享，进程同步采用POSIX信号量。
+IDE当前使用Qt Creator，当引擎完成后，会提供标准的makeFile。目前还在编写中，故没有提供部署方法。
+
+libraries是所用到的第三方库，有些库是安装到系统中的。故这里只放对应版本压缩包备份。目前使用libev、boost 1.56
 common是数据服、逻辑服、DB引擎、LOG引擎、NET引擎共用的代码，如数据类型
-DBEngine是LOG引擎，负责写玩家操作记录、消费产出（DB、NET的log比较少，不会通过LOG引擎去写）。
+LOGEngine是日志引擎，负责写玩家操作记录、消费产出（DB、NET的log比较少，不会通过LOG引擎去写）。
+DBEngine是数据库引擎
+NETEngine是通信引擎
+DataServer是数据服,当前同时负责RouteServer功能，转发指令。后期经过测试后视结果而定是否另加一个RouteServer
 build是各个引擎生成的可运行文件拷贝存放，用于发布
 libs是common中生成的各个.o文件存放处
 doc是相关开发文档存放处

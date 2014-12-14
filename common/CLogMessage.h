@@ -7,10 +7,12 @@
 #ifndef CLOGMESSAGE_H
 #define CLOGMESSAGE_H
 
+#include <iostream>
+
 #include "gstypes.h"
 #include "CPacket.h"
 
-#define MAX_PATH    32
+#define MAX_LOG_PATH    32
 
 class CLogMessage : public CPacket
 {
@@ -18,9 +20,8 @@ public:
     CLogMessage();
 
     void zero();
-    void set_path(const char *path);
-    const char *get_path();
-    uint32 get_path_length();
+    bool init(const char *path);
+    void endl();
 
     CLogMessage &operator << ( uint8 val );
     CLogMessage &operator << ( int8 val );
@@ -34,10 +35,11 @@ public:
     CLogMessage &operator << ( double val );
     CLogMessage &operator << ( const char *val );
     CLogMessage &operator << ( string &str );
+    void operator << ( std::basic_ostream< char, std::char_traits<char> >& (*_Pfn)
+                       (std::basic_ostream< char, std::char_traits<char> >&));
 
 private:
-    char m_path[MAX_PATH];
-    uint32 m_path_length;
+    strhead *m_p_log_length;
 
 };
 

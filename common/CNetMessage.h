@@ -23,17 +23,19 @@ class CNetMessage : public CPacket
 public:
     CNetMessage();
 
-    CPacket *get_packet();
-    int32 get_file_description();
-    int32 set_file_description(int32 fd);
-
     uint8 get_msg_param();
     uint8 set_msg_param(uint8 param);
     uint8 unset_msg_param(uint8 param);
 
+    char *get_free_net_msg_ptr();
+    char *get_net_msg_ptr(uint32 length);
+    uint32 get_free_net_msg_length();
+
+    bool add_buff_length( uint32 length );
+    uint32 get_net_msg_length();
+
 private:
     uint8 m_msg_param;
-    int32 m_fd;
 };
 
 #endif // CNETMESSAGE_H

@@ -175,18 +175,10 @@ void CLogWorker::flush()
     while ( itr != cache_msg.end() )
     {
         CLogMessage *pmsg = *itr;
-        std::cout << "file:" << pmsg->get_path() << " content:" << pmsg->buff << std::endl;
+        std::cout << "file:" << pmsg->get_buff_ptr() << std::endl;
 
-        /* 写入文件名 */
-        ret = m_shm.write_buff( pmsg->get_path(),pmsg->get_path_length() );
-        if ( !ret )
-        {
-            GFATAL() << "log shm buff overflow,log abort\n";
-            break;
-        }
-
-        /* 写入内容 */
-        ret = m_shm.write_buff( pmsg->buff,pmsg->get_length() );
+        /* 写入日志到缓冲区 */
+        ret = m_shm.write_buff( pmsg->get_buff_ptr(),pmsg->get_length() );
         if ( !ret )
         {
             GFATAL() << "log shm buff overflow,log abort\n";

@@ -2,6 +2,7 @@
 
 CPacket::CPacket()
 {
+    m_p_length = new(m_buff) uint32;
     zero();
 }
 
@@ -11,7 +12,7 @@ CPacket::CPacket()
  */
 void CPacket::zero()
 {
-    length = 0;
+    *m_p_length = sizeof(*m_p_length);/* 自己占了包头的长度 */
 }
 
 /**
@@ -21,36 +22,57 @@ void CPacket::zero()
 void CPacket::truncate()
 {
     zero();
-    memset( buff,0,MSG_LENGTH );
+    memset( m_buff + *m_p_length,0,PACKET_LENGTH ); /* 不要将包头置0 */
 }
 
 /**
  * @brief CPacket::get_length
- * @return 获取缓冲区数据长度
+ * @return 缓冲区数据长度(包括包头)
  */
 uint32 CPacket::get_length()
 {
-    return length;
+    return *m_p_length;
 }
 
 /**
- * @brief CPacket::add_length
- * @return 新缓冲区长度
- * 添加缓冲区长度
+ * @brief CPacket::get_packet_length
+ * @return 缓冲区数据长度(不包括包头)
+ * 获取当前已缓冲的数据长度
  */
-uint32 CPacket::add_length(uint32 length)
+uint32 CPacket::get_packet_length()
 {
-    return length += length;
+    return *m_p_length - sizeof(*m_p_length);
 }
 
 /**
- * @brief CPacket::set_length
+ * @brief CPacket::fill_buff
+ * @param p
  * @param length
- * @return 新缓冲区长度
- *
- * 设置缓冲区已使用长度
+ * @return
+ * 写入缓冲区
  */
-uint32 CPacket::set_length(uint32 length)
+bool CPacket::fill_buff( void *p, uint32 length )
 {
-    return length = length;
+    assert ( null != p );
+
+    if ( PACKET_LENGTH < *m_p_length + length )  /* buffer overflow */
+        return false;
+
+    memcpy( m_buff + *m_p_length,p,length );
+
+    *m_p_length += length;
+
+    return true;
+}
+
+/**
+ * @brief CPacket::get_buff_ptr
+ * @return 整个缓冲区的指针
+ * 获取整个缓冲区指针
+ */
+char *CPacket::get_buff_ptr()
+{
+    assert( null != m_buff );
+
+    return m_buff;
 }

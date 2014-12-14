@@ -56,7 +56,7 @@ CLogMessage &CLogger::message(const char *path)
     m_free_msg.pop_front();
 
     p->zero();    //must clear old data
-    p->set_path( path );
+    p->init( path );
     m_cache_msg.push_back( p );
 
     return *p;

@@ -112,4 +112,7 @@ typedef std::string    string;
 //typedef float      float
 //typedef double     double
 
+typedef uint16    nethead;/* 定义网络消息头类型 */
+typedef uint16    strhead;/* 定义字符串类型传输过程中消息头类型 */
+
 #endif    //for __GSTYPES_H__

@@ -8,7 +8,7 @@
 
 #include "gstypes.h"
 
-#define MSG_LENGTH    32768   //长度 32*1024
+#define PACKET_LENGTH    32768   //长度 32*1024
 
 class CPacket
 {
@@ -18,11 +18,13 @@ public:
     void zero();
     void truncate();
     uint32 get_length();
-    uint32 set_length(uint32 length);
-    uint32 add_length(uint32 length);
+    uint32 get_packet_length();
+    char *get_buff_ptr();
+    bool fill_buff( void *p,uint32 length );
 
-    char buff[MSG_LENGTH]; /* 暴露出来方便将socket中的数据直接拷贝进缓冲区 */
-    uint32 length;
+protected:
+    char m_buff[PACKET_LENGTH];
+    uint32 *m_p_length;
 };
 
 #endif // CPACKET_H

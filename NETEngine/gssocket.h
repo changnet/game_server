@@ -30,14 +30,7 @@
 #define MAX_FD                 738339
 #define MAX_ONLINE_SOCKETS     3000  //最大在线人数
 
-/*
- * BUFF_LENGTH和MSG_LENGTH不一样
- * BUFF_LENGTH是网络BUFF，大小一般比MSG_LENGTH小
- * MSG_LENGTH是各个进程交互的数据格式，大小要比BUFF_LENGTH大
- */
-#define BUFF_LENGTH            16384         //读写BUFF的长度 16*1024
-
-#define PACKET_HEAD_LEN        16            //协议包长度占sizeof(uint16)
+#define NET_PACKET_LENGTH            16384         //读写BUFF的长度 16*1024
 
 #define DISCONNECT_TIMEOUT     60            //ES_CONNECTING状态的socket,超时后直接断开
 

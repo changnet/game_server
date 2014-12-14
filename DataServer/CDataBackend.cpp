@@ -44,6 +44,6 @@ void CDataBackend::backend(ev::timer &w, int32 revents)
     CUtility::instance()->update_time(); //先更新时间，防止是第一次时间不对
 
 
-    GINFO( "test.log" ) << "update ...." << ++m_counter;
+    GINFO( "test.log" ) << "update ...." << ++m_counter << std::endl;
     m_log_worker.flush_log();
 }

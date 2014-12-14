@@ -220,11 +220,14 @@ CLogMessage &CLogMessage::operator << ( string &str )
 
 /**
  * @brief CLogMessage::operator <<
- * 使用std::endl来结束log
+ * 使用std::endl来结束log并换行
  */
 void CLogMessage::operator << (std::basic_ostream< char, std::char_traits<char> >& (*_Pfn)
                                (std::basic_ostream<char, std::char_traits<char> > &) )
 {
+    *this << "\n";
+
+    /* 协议约定字符串长度包括最后一个'\0' */
     *m_p_length += 1;
     *m_p_log_length += 1;
 }

@@ -32,6 +32,8 @@
 #include <cerrno>    /*  for errno  */
 #include <cassert>   /*  for assert */
 
+# define UNUSED(x) (void)x
+
 #ifdef NULL
 #undef NULL		/* in case <stdio.h> has defined it. or stddef.h */
 #endif

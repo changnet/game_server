@@ -7,10 +7,10 @@
 #include "CLogger.h"
 
 #define CONFIG_LENGTH        128           //小于 PATH_MAX limits.h
-#define IPC_LOG_HEAD         "gs-log-%s"
+#define IPC_LOG_HEAD         "gs-log-%s"   //内存共享文件名
 #define TRY_LOG_INTERVAL     3             //多久超时写入log
-#define FORCE_LOG_INTERVAL   5             //强制写入日志时超时时间
-#define FORCE_LOCK_TIME      2             //强制写入时超时时间
+#define FORCE_LOG_TIMES      5             //强制写入日志时次数
+#define FORCE_LOCK_TIME      2             //强制写入等待最长时间
 
 class CLogWorker
 {
@@ -33,7 +33,8 @@ private:
     CRorWSharedMemory m_shm;
 
     int32 m_pid;
-    time_t m_last_flush;            //上一次写入缓冲区时间，超时将强制写入
+    uint8 m_fail_times;   //尝试写入失败次数
+    time_t m_last;        //上一次写入缓冲区时间，超时将强制写入
 
 };
 

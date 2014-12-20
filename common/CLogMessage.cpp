@@ -225,6 +225,7 @@ CLogMessage &CLogMessage::operator << ( string &str )
 void CLogMessage::operator << (std::basic_ostream< char, std::char_traits<char> >& (*_Pfn)
                                (std::basic_ostream<char, std::char_traits<char> > &) )
 {
+    UNUSED(_Pfn);
     *this << "\n";
 
     /* 协议约定字符串长度包括最后一个'\0' */

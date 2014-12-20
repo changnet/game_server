@@ -6,7 +6,8 @@
 
 CLogWorker::CLogWorker()
 {
-    m_last_flush = 0;
+    m_last       = 0;
+    m_fail_times = 0;
 }
 
 void CLogWorker::uninit()
@@ -175,7 +176,6 @@ void CLogWorker::flush()
     while ( itr != cache_msg.end() )
     {
         CLogMessage *pmsg = *itr;
-        std::cout << "file:" << pmsg->get_buff_ptr() << std::endl;
 
         /* 写入日志到缓冲区 */
         ret = m_shm.write_buff( pmsg->get_buff_ptr(),pmsg->get_length() );
@@ -192,12 +192,12 @@ void CLogWorker::flush()
 
     cache_msg.clear();
 
-    m_last_flush = CUtility::instance()->time();
+    m_last = CUtility::instance()->time();
 }
 
 /**
  * @brief CLogWorker::try_flush
- * 超时写入日志，如果发生竞争，则暂时不写入
+ * 尝试写入日志，如果发生竞争，则暂时不写入
  */
 bool CLogWorker::try_flush()
 {
@@ -210,6 +210,7 @@ bool CLogWorker::try_flush()
             return false;
         }
 
+        m_fail_times ++;  //记录失败次数
         return false;
     }
 
@@ -245,7 +246,7 @@ bool CLogWorker::force_flush()
  * @return
  * 1 超时尝试写入
  * 2 多次尝试后超时强制写入
- * 3 缓冲区满写入
+ * 3 缓冲区满强制写入
  */
 bool CLogWorker::flush_log()
 {
@@ -256,10 +257,13 @@ bool CLogWorker::flush_log()
     if ( ploger->is_cache_full() )  //缓冲区已满，强制写入
         return force_flush();
 
-    time_t interval = CUtility::instance()->time() - m_last_flush;
-    if ( interval > FORCE_LOG_INTERVAL )  //try多次后仍无法写入，需要强制写入
+    if ( m_fail_times >= FORCE_LOG_TIMES )  //try多次后仍无法写入，需要强制写入
+    {
+        m_fail_times = 0;
         return force_flush();
+    }
 
+    int32 interval = CUtility::instance()->time() - m_last;
     if ( interval < TRY_LOG_INTERVAL )    //缓冲未超时，先不写入
         return false;
 

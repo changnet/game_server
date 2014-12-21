@@ -9,28 +9,31 @@ CRorWSharedMemory::CRorWSharedMemory()
 }
 
 /* 获取数组区指针 */
-void *CRorWSharedMemory::get_shm_data_buff()
+char *CRorWSharedMemory::get_shm_data_buff()
 {
     return m_p_data;
 }
 
 /* 获取已使用的缓冲区长度 */
-uint32 *CRorWSharedMemory::get_cache_length()
+uint32 CRorWSharedMemory::get_cache_length()
 {
-    return m_p_length;
+    return *m_p_length;
 }
 
 bool CRorWSharedMemory::map_shm(int32 prot)
 {
     int32 shm_fd = get_file_description();
 
-    m_shm_buff = mmap( null,SHM_PAGE_SIZE,prot,MAP_SHARED | MAP_NORESERVE,shm_fd,0 );
+    void *pbuffer = mmap( null,SHM_PAGE_SIZE,prot,MAP_SHARED | MAP_NORESERVE,shm_fd,0 );
 
-    if ( MAP_FAILED == m_shm_buff )
+    if ( MAP_FAILED == pbuffer )
         return false;
 
-    m_p_length  = new( m_shm_buff ) uint32;
-    m_p_data    = static_cast<char *>(m_shm_buff) + sizeof( *m_p_length );
+    m_p_length  = new( pbuffer ) uint32;
+    *m_p_length = 0;
+
+    m_shm_buff  = static_cast<char *>(pbuffer);
+    m_p_data    = m_shm_buff + sizeof( *m_p_length );
     m_data_size = SHM_PAGE_SIZE - sizeof( *m_p_length );
 
     return true;
@@ -62,4 +65,13 @@ bool CRorWSharedMemory::write_buff(const void *src, uint32 length)
     *m_p_length += length;
 
     return true;
+}
+
+/**
+ * @brief CRorWSharedMemory::zero_data_length
+ * 将共享内存数据长度置0
+ */
+void CRorWSharedMemory::zero_data_length()
+{
+    *m_p_length = 0;
 }

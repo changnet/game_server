@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     CLogMessage.cpp \
     CLogFile.cpp \
     CUtility.cpp \
-    CLogWorker.cpp
+    CLogWorker.cpp \
+    CBackend.cpp
 
 HEADERS += \
     CLogger.h \
@@ -40,5 +41,6 @@ HEADERS += \
     CLogMessage.h \
     CLogFile.h \
     CUtility.h \
-    CLogWorker.h
+    CLogWorker.h \
+    CBackend.h
 

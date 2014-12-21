@@ -27,8 +27,8 @@ void CLogBackend::end_work()
  * @param revents
  *
  * 1.处理缓存的日志
- *   （1）日志超量需要写入文件
- *    (2) 日志超时需要写入文件
+ *    (1)日志超量需要写入文件
+ *    (2)日志超时需要写入文件
  * 2.从共享内存读取日志,try_lock失败一定次数后强制阻塞等待锁定
  */
 void CLogBackend::backend(ev::timer &w, int32 revents)
@@ -38,4 +38,10 @@ void CLogBackend::backend(ev::timer &w, int32 revents)
         GFATAL() << "backend error:" << strerror(errno) << "\n";
         w.stop();
     }
+
+    CBackend::backend();
+
+    m_log_worker.read_shm_log();
+
+    //TODO 写入文件
 }

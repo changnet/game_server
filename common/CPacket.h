@@ -24,7 +24,7 @@ public:
 
 protected:
     char m_buff[PACKET_LENGTH];
-    uint32 *m_p_length;
+    msghead *m_p_length;
 };
 
 #endif // CPACKET_H

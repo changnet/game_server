@@ -3,10 +3,11 @@
 
 #define DATABACKEND_TIME    0.005    //后台处理速度
 
+#include "CBackend.h"
 #include "CLogWorker.h"
 #include <ev++.h>
 
-class CDataBackend
+class CDataBackend : public CBackend
 {
 public:
     CDataBackend();

@@ -193,6 +193,7 @@ void CLogWorker::flush()
     cache_msg.clear();
 
     m_last = CUtility::instance()->time();
+    m_fail_times = 0;
 }
 
 /**
@@ -259,7 +260,6 @@ bool CLogWorker::flush_log()
 
     if ( m_fail_times >= FORCE_LOG_TIMES )  //try多次后仍无法写入，需要强制写入
     {
-        m_fail_times = 0;
         return force_flush();
     }
 
@@ -268,4 +268,112 @@ bool CLogWorker::flush_log()
         return false;
 
     return try_flush();  //尝试写入
+}
+
+/**
+ * @brief CLogWorker::read_log_from_shm
+ * @return
+ * 从共享内存读取日志
+ * 1 超时尝试读取
+ * 2 多次失败后强制读取
+ */
+bool CLogWorker::read_shm_log()
+{
+    if ( m_fail_times >= FORCE_LOG_TIMES )  //try多次后仍无法写入，需要强制写入
+    {
+        return force_read_log_from_shm();
+    }
+
+    int32 interval = CUtility::instance()->time() - m_last;
+    if ( interval < TRY_LOG_INTERVAL )    //缓冲未超时，先不写入
+        return false;
+
+    return try_read_log_from_shm();
+}
+
+/**
+ * @brief CLogWorker::read_log_from_shm
+ * 从共享内存读取日志
+ */
+void CLogWorker::read_log_from_shm()
+{
+    char *pbuff = m_shm.get_shm_data_buff();
+    uint32 length = m_shm.get_cache_length();
+    uint32 read_length = 0;
+    char path[128];
+    char content[128];
+
+    while ( read_length < length )
+    {
+        //TODO  这里数据应写回CLogMessage来缓存，但原operator << 设计有问题，待重新处理
+
+        /* 读取协议长度 */
+        strhead *pstr_len = reinterpret_cast<strhead *>(pbuff+read_length);
+        read_length += sizeof(strhead);
+
+        /* 读取路径长度 */
+        pstr_len =reinterpret_cast<strhead *>(pbuff+read_length);
+        read_length += sizeof(strhead);
+
+        memcpy( path,pbuff+read_length,*pstr_len );
+        read_length += *pstr_len;
+
+        /* 读取内容长度 */
+        pstr_len =reinterpret_cast<strhead *>(pbuff+read_length);
+        read_length += sizeof(strhead);
+
+        memcpy( content,pbuff+read_length,*pstr_len );
+        read_length += *pstr_len;
+
+        std::cout << "file:" << path << "  content:" << content << std::endl;
+    }
+
+    m_shm.zero_data_length();
+}
+
+/**
+ * @brief CLogWorker::try_read_log_from_shm
+ * @return  成功true,失败false
+ * 尝试锁定共享内存读取日志
+ */
+bool CLogWorker::try_read_log_from_shm()
+{
+    int32 ret = m_sem_lock.try_lock();
+    if ( -1 == ret )
+    {
+        if ( errno != EAGAIN )
+        {
+            GERROR() << "try_read_log_from_shm,lock fail:" << strerror( errno ) << std::endl;
+            return false;
+        }
+
+        m_fail_times ++;  //记录失败次数
+        return false;
+    }
+
+    read_log_from_shm();
+
+    m_sem_lock.unlock();
+
+    return true;
+}
+
+/**
+ * @brief CLogWorker::froce_read_log_from_shm
+ * @return 成功true,失败false
+ */
+bool CLogWorker::force_read_log_from_shm()
+{
+    int32 ret = m_sem_lock.time_lock( 0,FORCE_LOCK_TIME );
+    if ( -1 == ret )
+    {
+        GERROR() << "froce_read_log_from_shm,lock fail,log maybe lost:" << strerror( errno ) << std::endl;
+        return false;
+    }
+
+    read_log_from_shm();
+
+    m_sem_lock.unlock();
+
+    return true;
 }

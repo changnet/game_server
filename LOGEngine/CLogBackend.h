@@ -1,13 +1,14 @@
 #ifndef CLOGBACKEND_H
 #define CLOGBACKEND_H
 
+#include "CBackend.h"
 #include "gstypes.h"
 #include "CLogWorker.h"
 #include "ev++.h"
 
 #define LOGBACKEND_TIME    0.05    //log进程运行速度
 
-class CLogBackend
+class CLogBackend : public CBackend
 {
 public:
     CLogBackend();

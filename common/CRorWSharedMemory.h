@@ -14,14 +14,15 @@ class CRorWSharedMemory : public CSharedMemory
 public:
     CRorWSharedMemory();
 
+    void zero_data_length();
     bool map_shm(int32 prot);
     bool unmap_shm();
-    void *get_shm_data_buff();
-    uint32 *get_cache_length();
+    char *get_shm_data_buff();
+    uint32 get_cache_length();
     bool write_buff( const void *src,uint32 length );
 
 private:
-    void  *m_shm_buff;
+    char   *m_shm_buff;
     uint32 *m_p_length;
     char   *m_p_data;
     uint32 m_data_size;

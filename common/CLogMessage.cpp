@@ -236,6 +236,7 @@ void CLogMessage::operator << (std::basic_ostream< char, std::char_traits<char> 
 bool CLogMessage::init( const char *path )
 {
     strhead *p_path_length = new(m_buff+*m_p_length) strhead;
+    *m_p_length += sizeof(strhead);
 
     /* snprintf
      * Upon successful return, these functions return the number of characters
@@ -256,11 +257,13 @@ bool CLogMessage::init( const char *path )
         //如果协议约定需要写入字符串最后一个\0,则需要cx++
         cx++;
         *p_path_length = cx;
-        *m_p_length += cx + sizeof(strhead);
+        *m_p_length += cx;
 
     }
 
-    m_p_log_length = new(m_buff+*m_p_length+*p_path_length) strhead;
+    m_p_log_length = new(m_buff+*m_p_length) strhead;
+    *m_p_length += sizeof(strhead);
+
     *m_p_log_length = 0;
 
     return true;

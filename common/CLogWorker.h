@@ -23,10 +23,15 @@ public:
     bool unwait();
     void uninit();
     bool flush_log();
+    bool read_shm_log();
 private:
     void flush();
     bool try_flush();
     bool force_flush();
+
+    void read_log_from_shm();
+    bool force_read_log_from_shm();
+    bool try_read_log_from_shm();
 
 private:
     CSeamphoreLock m_sem_lock;

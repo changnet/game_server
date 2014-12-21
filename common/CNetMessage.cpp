@@ -63,7 +63,7 @@ bool CNetMessage::add_buff_length(uint32 length)
  */
 uint32 CNetMessage::get_net_msg_length()
 {
-    return *reinterpret_cast<nethead *>(m_buff+sizeof(*m_p_length));
+    return *reinterpret_cast<msghead *>(m_buff+sizeof(*m_p_length));
 }
 
 /**

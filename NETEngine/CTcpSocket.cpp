@@ -200,7 +200,7 @@ void CTcpSocket::start()
 void CTcpSocket::process_io_read()
 {
     uint32 current_length = m_prmessage->get_packet_length();
-    if ( current_length < sizeof(nethead) )  //not even read packet head
+    if ( current_length < sizeof(msghead) )  //not even read packet head
         return;
 
     /* 确认current_length >= sizeof(nethead) 才能获取到消息长度 */
@@ -213,7 +213,7 @@ void CTcpSocket::process_io_read()
         return;
     }
 
-    length += sizeof(nethead);  //数据长度不包含协议长度，才需要加
+    length += sizeof(msghead);  //数据长度不包含协议长度，才需要加
 
     if ( length > current_length )  //协议未接收完整
         return;

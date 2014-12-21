@@ -24,6 +24,7 @@ LIBS += ../common/CLogger.o \
         ../common/CSeamphoreLock.o \
         ../common/CRorWSharedMemory.o \
         ../common/CSharedMemory.o \
+        ../common/CBackend.o \
         -lrt \
         -pthread \            #not -lpthread
         -lev

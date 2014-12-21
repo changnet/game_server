@@ -20,6 +20,7 @@ LIBS += ../common/CLogger.o \
         ../common/CUtility.o \
         ../common/CServerSetting.o \
         ../common/CRorWSharedMemory.o \
+        ../common/CBackend.o \
         -lev \
         -pthread \   #not -lpthread
         -lrt

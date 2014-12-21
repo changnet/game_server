@@ -2,7 +2,7 @@
 
 CPacket::CPacket()
 {
-    m_p_length = new(m_buff) uint32;
+    m_p_length = new(m_buff) msghead;
     zero();
 }
 

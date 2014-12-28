@@ -14,7 +14,7 @@
 
 #define MAX_LOG_PATH    32
 
-class CLogMessage : public CPacket
+class CLogMessage : public CPacket<msghead>
 {
 public:
     CLogMessage();

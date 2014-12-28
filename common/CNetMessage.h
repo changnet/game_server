@@ -18,7 +18,7 @@ enum ENetMessageParam
     ENMP_SOCKE  = 0x2    //socket描述符
 };
 
-class CNetMessage : public CPacket
+class CNetMessage : public CPacket<nethead>
 {
 public:
     CNetMessage();

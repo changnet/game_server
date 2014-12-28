@@ -18,7 +18,6 @@ SOURCES += main.cpp \
     CRWSharedMemory.cpp \
     CRorWSharedMemory.cpp \
     CMessageQueue.cpp \
-    CPacket.cpp \
     CNetMessage.cpp \
     CLogMessage.cpp \
     CLogFile.cpp \

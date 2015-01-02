@@ -22,10 +22,10 @@ INCLUDEPATH += ../common \
 
 LIBS += ../common/CLogger.o \
         ../common/CLogMessage.o \
-        ../common/CPacket.o \
         ../common/CNetMessage.o \
         ../common/CServerSetting.o \
         ../common/CMessageQueue.o \
-        ../common/CLogFile.o \
         ../common/CUtility.o \
+        ../common/CLogStream.o \
+        ../common/CRuntimeStream.o \
         -lev

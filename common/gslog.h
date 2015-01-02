@@ -12,24 +12,19 @@
 #define GSLOG_H
 
 #include "CLogger.h"
+#include "CLogStream.h"
+#include "CRuntimeStream.h"
 
-// first i define INFO WARNING ERROR FATAL,buf libev conflict,say "some systems stupidly #define ERROR"
+// first i define INFO WARNING ERROR,buf libev conflict,say "some systems stupidly #define ERROR"
 // G mean GAME
 
-#ifdef DEBUG
+static CRuntimeStream runtime_stream( "runtime" );
+static CLogStream     warning_stream( "warning" );
+static CLogStream     error_stream  ( "error"   );
 
 #define GINFO(x)      CLogger::instance()->message(x)
-#define GWARNING()    std::cout<<"waring ...\n";CLogFile::warning()
-#define GERROR()      std::cout<<"error...\n";CLogFile::error()
-#define GFATAL()      std::cout<<"fatal...\n";CLogFile::fatal()
-
-#else
-
-    #define GINFO(x)      CLogger::instance()->message(x)
-    #define GWARNING()    CLogFile::warning()
-    #define GERROR()      CLogFile::error()
-    #define GFATAL()      CLogFile::fatal()
-
-#endif //DEBUG
+#define GRUNTIME()    runtime_stream
+#define GWARNING()    warning_stream
+#define GERROR()      error_stream
 
 #endif // GSLOG_H

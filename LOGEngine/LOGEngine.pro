@@ -12,15 +12,15 @@ INCLUDEPATH += ../common \
 
 LIBS += ../common/CLogger.o \
         ../common/CLogMessage.o \
-        ../common/CPacket.o \
         ../common/CSeamphoreLock.o \
         ../common/CSharedMemory.o \
-        ../common/CLogFile.o \
         ../common/CLogWorker.o \
         ../common/CUtility.o \
         ../common/CServerSetting.o \
         ../common/CRorWSharedMemory.o \
         ../common/CBackend.o \
+        ../common/CLogStream.o \
+        ../common/CRuntimeStream.o \
         -lev \
         -pthread \   #not -lpthread
         -lrt

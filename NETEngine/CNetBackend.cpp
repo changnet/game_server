@@ -140,7 +140,7 @@ void CNetBackend::socket_check_cb(ev::timer &w, int32 revents)
 {
     if ( EV_ERROR & revents )
     {
-        GFATAL() << "check socket connect timeout call back error:" << strerror(errno) << "\n";
+        GERROR() << "check socket connect timeout call back error:" << strerror(errno) << "\n";
         w.stop();
 
         abort_work( "socket_check_cb fail" );

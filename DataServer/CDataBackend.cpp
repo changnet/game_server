@@ -37,7 +37,7 @@ void CDataBackend::backend(ev::timer &w, int32 revents)
 {
     if ( EV_ERROR & revents )
     {
-        GFATAL() << "backend error:" << strerror(errno) << "\n";
+        GERROR() << "backend error:" << strerror(errno) << "\n";
         w.stop();
     }
 

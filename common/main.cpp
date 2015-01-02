@@ -16,7 +16,7 @@ ENGINE_NAME = "haha";
     GINFO( "user.txt" ) << "I coming soon";
     GWARNING() << "running out of time" << endl;
     GERROR() << "error comming" << endl;
-    GFATAL() << "shutdown now ..." << endl;
+    GRUNTIME() << "shutdown now ..." << endl << "maybe later ..." << endl;
 
     uint8 val1 = 2;
     int8 val2 = 3;

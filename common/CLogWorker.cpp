@@ -39,13 +39,13 @@ bool CLogWorker::init(int32 shm_flag,int32 shm_mode, int32 sem_flag,int32 sem_mo
 
     if ( null == p_serverid )
     {
-        GFATAL() << "can not get server id config\n";
+        GERROR() << "can not get server id config\n";
         return false;
     }
 
     if ( snprintf(tmp_buff,CONFIG_LENGTH,IPC_LOG_HEAD,p_serverid) < 0 )
     {
-        GFATAL() << "snprintf error while set sem id\n";
+        GERROR() << "snprintf error while set sem id\n";
         return false;
     }
 
@@ -54,20 +54,20 @@ bool CLogWorker::init(int32 shm_flag,int32 shm_mode, int32 sem_flag,int32 sem_mo
      */
     if ( !m_sem_lock.open( tmp_buff,sem_flag,sem_mode,0 ) )
     {
-        GFATAL() << "fail to init log sem:" << strerror( errno ) << std::endl;
+        GERROR() << "fail to init log sem:" << strerror( errno ) << std::endl;
         return false;
     }
 
     if ( snprintf(tmp_buff,CONFIG_LENGTH,IPC_LOG_HEAD,p_serverid) < 0 )
     {
-        GFATAL() << "snprintf error while set sem id\n";
+        GERROR() << "snprintf error while set sem id\n";
         return false;
     }
     if ( !m_shm.open_shm( tmp_buff,shm_flag,shm_mode ) )
     {
         uninit();
 
-        GFATAL() << "fail to open log shm:" << strerror( errno ) << std::endl;
+        GERROR() << "fail to open log shm:" << strerror( errno ) << std::endl;
         return false;
     }
 
@@ -75,7 +75,7 @@ bool CLogWorker::init(int32 shm_flag,int32 shm_mode, int32 sem_flag,int32 sem_mo
     {
         uninit();
 
-        GFATAL() << "fail to map shm buff:" << strerror( errno ) << std::endl;
+        GERROR() << "fail to map shm buff:" << strerror( errno ) << std::endl;
         return false;
     }
 
@@ -88,7 +88,7 @@ bool CLogWorker::run_log_engine()
 
     if ( null == p_serverid )
     {
-        GFATAL() << "can not get server id config\n";
+        GERROR() << "can not get server id config\n";
         return false;
     }
 
@@ -99,7 +99,7 @@ bool CLogWorker::run_log_engine()
          || snprintf(server_id,CONFIG_LENGTH,"%s",p_serverid) < 0
          )
     {
-        GFATAL() << "snprintf error while set sem id\n";
+        GERROR() << "snprintf error while set sem id\n";
         return false;
     }
 
@@ -113,7 +113,7 @@ bool CLogWorker::run_log_engine()
         int32 ret = execv( p_engine_path,argv );
         if ( ret < 0 ) //error
         {
-            GFATAL() << "exec log engine fail:" << strerror( errno ) << std::endl;
+            GERROR() << "exec log engine fail:" << strerror( errno ) << std::endl;
             return false;
         }
 
@@ -181,7 +181,7 @@ void CLogWorker::flush()
         ret = m_shm.write_buff( pmsg->get_buff_ptr(),pmsg->get_length() );
         if ( !ret )
         {
-            GFATAL() << "log shm buff overflow,log abort\n";
+            GERROR() << "log shm buff overflow,log abort\n";
             break;
         }
 

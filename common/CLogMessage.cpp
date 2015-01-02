@@ -3,6 +3,8 @@
 
 #include "gslog.h"
 
+#define LOG_POS    (*m_p_length-1)  /* 需要把最后一个\0覆盖掉 */
+
 CLogMessage::CLogMessage()
 {
     zero();
@@ -16,7 +18,7 @@ void CLogMessage::zero()
 
 CLogMessage &CLogMessage::operator << ( uint8 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%hhu",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%hhu",val);
 
     if ( cx < 0 )
     {
@@ -33,7 +35,7 @@ CLogMessage &CLogMessage::operator << ( uint8 val )
 
 CLogMessage &CLogMessage::operator << ( int8 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%hhd",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%hhd",val);
 
     if ( cx < 0 )
     {
@@ -50,7 +52,7 @@ CLogMessage &CLogMessage::operator << ( int8 val )
 
 CLogMessage &CLogMessage::operator << ( uint16 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%hu",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%hu",val);
 
     if ( cx < 0 )
     {
@@ -67,7 +69,7 @@ CLogMessage &CLogMessage::operator << ( uint16 val )
 
 CLogMessage &CLogMessage::operator << ( int16 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%hd",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%hd",val);
 
     if ( cx < 0 )
     {
@@ -84,7 +86,7 @@ CLogMessage &CLogMessage::operator << ( int16 val )
 
 CLogMessage &CLogMessage::operator << ( uint32 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%u",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%u",val);
 
     if ( cx < 0 )
     {
@@ -101,7 +103,7 @@ CLogMessage &CLogMessage::operator << ( uint32 val )
 
 CLogMessage &CLogMessage::operator << ( int32 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%d",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%d",val);
 
     if ( cx < 0 )
     {
@@ -118,7 +120,7 @@ CLogMessage &CLogMessage::operator << ( int32 val )
 
 CLogMessage &CLogMessage::operator << ( uint64 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%llu",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%llu",val);
 
     if ( cx < 0 )
     {
@@ -135,7 +137,7 @@ CLogMessage &CLogMessage::operator << ( uint64 val )
 
 CLogMessage &CLogMessage::operator << ( int64 val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%lld",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%lld",val);
 
     if ( cx < 0 )
     {
@@ -152,7 +154,7 @@ CLogMessage &CLogMessage::operator << ( int64 val )
 
 CLogMessage &CLogMessage::operator << ( float val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%f",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%f",val);
 
     if ( cx < 0 )
     {
@@ -169,7 +171,7 @@ CLogMessage &CLogMessage::operator << ( float val )
 
 CLogMessage &CLogMessage::operator << ( double val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%f",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%f",val);
 
     if ( cx < 0 )
     {
@@ -186,7 +188,7 @@ CLogMessage &CLogMessage::operator << ( double val )
 
 CLogMessage &CLogMessage::operator << ( const char *val )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%s",val);
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%s",val);
 
     if ( cx < 0 )
     {
@@ -203,7 +205,7 @@ CLogMessage &CLogMessage::operator << ( const char *val )
 
 CLogMessage &CLogMessage::operator << ( string &str )
 {
-    int32 cx = snprintf(m_buff+*m_p_length,PACKET_LENGTH-*m_p_length,"%s",str.c_str() );
+    int32 cx = snprintf(m_buff+LOG_POS,PACKET_LENGTH-LOG_POS,"%s",str.c_str() );
 
     if ( cx < 0 )
     {
@@ -220,17 +222,13 @@ CLogMessage &CLogMessage::operator << ( string &str )
 
 /**
  * @brief CLogMessage::operator <<
- * 使用std::endl来结束log并换行
+ * 使用std::endl来结束log并换行,故不再返回 *this
  */
 void CLogMessage::operator << (std::basic_ostream< char, std::char_traits<char> >& (*_Pfn)
                                (std::basic_ostream<char, std::char_traits<char> > &) )
 {
     UNUSED(_Pfn);
     *this << "\n";
-
-    /* 协议约定字符串长度包括最后一个'\0' */
-    *m_p_length += 1;
-    *m_p_log_length += 1;
 }
 
 bool CLogMessage::init( const char *path )
@@ -264,7 +262,11 @@ bool CLogMessage::init( const char *path )
     m_p_log_length = new(m_buff+*m_p_length) strhead;
     *m_p_length += sizeof(strhead);
 
-    *m_p_log_length = 0;
+    uint32 size = sizeof( '\0' );
+    m_buff[*m_p_length] = '\0';  //把日志初始化为空串
+
+    *m_p_log_length = size;
+    *m_p_length += size;
 
     return true;
 }

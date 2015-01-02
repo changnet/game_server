@@ -6,7 +6,6 @@
 #include <deque>
 
 #include "CLogMessage.h"
-#include "CLogFile.h"
 
 using std::deque;
 

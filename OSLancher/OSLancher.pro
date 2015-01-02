@@ -13,9 +13,9 @@ INCLUDEPATH += ../common \
 LIBS += ../common/CLogger.o \
         ../common/CServerSetting.o \
         ../common/CLogMessage.o \
-        ../common/CLogFile.o \
-        ../common/CPacket.o \
         ../common/CUtility.o \
+        ../common/CLogStream.o \
+        ../common/CRuntimeStream.o \
         -lev
 
 HEADERS += \

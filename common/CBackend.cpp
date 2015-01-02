@@ -1,6 +1,5 @@
 #include "CBackend.h"
 
-#include "CLogFile.h"
 #include "CLogger.h"
 
 /**
@@ -20,7 +19,6 @@ CBackend::CBackend()
  */
 CBackend::~CBackend()
 {
-    CLogFile::unistance();
     CLogger::uninstance();
     CUtility::unstance();
 

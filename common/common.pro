@@ -20,10 +20,11 @@ SOURCES += main.cpp \
     CMessageQueue.cpp \
     CNetMessage.cpp \
     CLogMessage.cpp \
-    CLogFile.cpp \
     CUtility.cpp \
     CLogWorker.cpp \
-    CBackend.cpp
+    CBackend.cpp \
+    CLogStream.cpp \
+    CRuntimeStream.cpp
 
 HEADERS += \
     CLogger.h \
@@ -38,8 +39,10 @@ HEADERS += \
     CPacket.h \
     CNetMessage.h \
     CLogMessage.h \
-    CLogFile.h \
     CUtility.h \
     CLogWorker.h \
-    CBackend.h
+    CBackend.h \
+    gssignal.h \
+    CLogStream.h \
+    CRuntimeStream.h
 

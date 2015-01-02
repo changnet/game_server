@@ -11,7 +11,10 @@
 #ifndef GSLOG_H
 #define GSLOG_H
 
-#include "CLogger.h"
+#include <sys/types.h>
+#include <unistd.h>      /* for getpid */
+
+#include "CUtility.h"
 #include "CLogStream.h"
 #include "CRuntimeStream.h"
 
@@ -22,9 +25,12 @@ static CRuntimeStream runtime_stream( "runtime" );
 static CLogStream     warning_stream( "warning" );
 static CLogStream     error_stream  ( "error"   );
 
+extern const char *ENGINE_NAME;
 #define GINFO(x)      CLogger::instance()->message(x)
 #define GRUNTIME()    runtime_stream
-#define GWARNING()    warning_stream
-#define GERROR()      error_stream
+#define GWARNING()    (warning_stream << "[" << CUtility::instance()->str_time() \
+                            << getpid() << "-" << ENGINE_NAME << "]")
+#define GERROR()      (error_stream << "[" << CUtility::instance()->str_time() \
+                            << getpid() << "-" << ENGINE_NAME << "]")
 
 #endif // GSLOG_H

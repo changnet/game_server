@@ -12,7 +12,6 @@ const char *ENGINE_NAME = "common";
 int main()
 {
     cout << "version:" << __cplusplus<<endl;
-ENGINE_NAME = "haha";
     GINFO( "user.txt" ) << "I coming soon";
     GWARNING() << "running out of time" << endl;
     GERROR() << "error comming" << endl;

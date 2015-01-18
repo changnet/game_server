@@ -44,5 +44,6 @@ HEADERS += \
     CBackend.h \
     gssignal.h \
     CLogStream.h \
-    CRuntimeStream.h
+    CRuntimeStream.h \
+    signal++.h
 

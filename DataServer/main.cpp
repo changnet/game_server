@@ -16,6 +16,8 @@ int main(int argc,char **argv)
     ENGINE_NAME = argv[0];
 
     CDataBackend worker;
+
+    worker.signal_watch();
     worker.start();
 
     return 0;

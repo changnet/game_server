@@ -5,7 +5,6 @@
 
 #include "CBackend.h"
 #include "CLogWorker.h"
-#include <ev++.h>
 
 class CDataBackend : public CBackend
 {
@@ -13,15 +12,16 @@ public:
     CDataBackend();
 
     void start();
+    void stop();
+    void on_exit();
 
 private:  //function
     void backend( ev::timer &w,int32 revents );
 
 private:
     CLogWorker m_log_worker;
-    struct ev_loop *loop;
     ev::timer m_loop_timer;
-    uint32 m_counter;
+    uint32 m_counter; /* TODO: 删除测试计数器 */
 };
 
 #endif // CDATABACKEND_H

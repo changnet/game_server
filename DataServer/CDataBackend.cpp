@@ -7,9 +7,12 @@
 CDataBackend::CDataBackend()
 {
     m_counter = 0;
-    loop = EV_DEFAULT;
 }
 
+/**
+ * @brief CDataBackend::start
+ * 开始后台工作
+ */
 void CDataBackend::start()
 {
     /* shm需要S_IRUSR|S_IWUSR，因为这里是创建，本进程不需要读，其他进程需要。否则其他进程Permission denied
@@ -33,6 +36,12 @@ void CDataBackend::start()
     m_log_worker.uninit();
 }
 
+/**
+ * @brief CDataBackend::backend
+ * @param w
+ * @param revents
+ * 后台工作主函数
+ */
 void CDataBackend::backend(ev::timer &w, int32 revents)
 {
     if ( EV_ERROR & revents )
@@ -44,6 +53,29 @@ void CDataBackend::backend(ev::timer &w, int32 revents)
     CBackend::backend();
 
 
+    int8 i= -1;
+    double d = -9876980.93;
+    float f = 998.6;
+    uint32 u=777777777;
     GINFO( "test.log" ) << "update ...." << ++m_counter << std::endl;
+    GINFO( "test.log" ) << "update second ...." << i << "-" << d << "-" << f << "-" << u;
     m_log_worker.flush_log();
+}
+
+/**
+ * @brief CDataBackend::stop
+ * 终止后台工作
+ */
+void CDataBackend::stop()
+{
+    on_exit();
+}
+
+/**
+ * @brief CDataBackend::on_exit
+ * 进程退出时清理资源
+ */
+void CDataBackend::on_exit()
+{
+    m_log_worker.uninit();  /* 清理共享内存及信号量 */
 }

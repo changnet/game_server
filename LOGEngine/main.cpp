@@ -24,10 +24,12 @@ int32 main(int32 argc,char **argv)
     }
 
     ENGINE_NAME = argv[0];
+
     CLogBackend worker;
 
-    worker.start_work();
-    worker.end_work();
+    worker.signal_watch();
+    worker.start();
+    worker.stop();
 
     std::cout << "log engine run..." << std::endl;
 

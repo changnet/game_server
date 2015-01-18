@@ -13,8 +13,10 @@ class CLogBackend : public CBackend
 public:
     CLogBackend();
 
-    void start_work();
-    void end_work();
+    void start();
+    void stop();
+
+    void on_exit();
 
 private:
     void backend( ev::timer &w, int32 revents );

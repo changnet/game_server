@@ -5,7 +5,11 @@ CLogBackend::CLogBackend()
     loop = EV_DEFAULT;
 }
 
-void CLogBackend::start_work()
+/**
+ * @brief CLogBackend::start
+ * 开始日志引擎后台事件循环
+ */
+void CLogBackend::start()
 {
     m_log_worker.init( O_CREAT | O_RDWR,S_IRUSR,O_CREAT | O_RDWR,S_IWUSR | S_IRUSR,PROT_WRITE );
     m_log_worker.unwait();
@@ -17,8 +21,13 @@ void CLogBackend::start_work()
     ev_run( loop,0 );
 }
 
-void CLogBackend::end_work()
+/**
+ * @brief CLogBackend::stop
+ * 终止日志引擎后台事件循环
+ */
+void CLogBackend::stop()
 {
+    on_exit();
 }
 
 /**
@@ -44,4 +53,13 @@ void CLogBackend::backend(ev::timer &w, int32 revents)
     m_log_worker.read_shm_log();
 
     //TODO 写入文件
+}
+
+/**
+ * @brief CLogBackend::on_exit
+ * 进程退出时清理资源
+ */
+void CLogBackend::on_exit()
+{
+    m_log_worker.uninit();
 }

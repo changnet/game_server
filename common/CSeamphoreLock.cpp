@@ -4,6 +4,7 @@
 
 CSeamphoreLock::CSeamphoreLock()
 {
+    m_open = false;
     m_sem_name[0] = '\0';
     m_psem = null;
 }
@@ -48,6 +49,7 @@ bool CSeamphoreLock::open( const char *name,int32 oflag,mode_t mode, uint32 valu
         return false;
     }
 
+    m_open = true;
     return true;
 }
 
@@ -99,6 +101,11 @@ int32 CSeamphoreLock::time_lock( int32 nano_sec,int32 sec )
     return sem_timedwait( m_psem,&ts );
 }
 
+/**
+ * @brief CSeamphoreLock::unlock
+ * @return
+ * 解除锁定
+ */
 int32 CSeamphoreLock::unlock()
 {
     return sem_post( m_psem );
@@ -118,15 +125,20 @@ bool CSeamphoreLock::get_value( int32 sval )
     return true;
 }
 
-
+/**
+ * @brief CSeamphoreLock::close
+ * @return
+ * 关闭并删除信号量
+ */
 int32 CSeamphoreLock::close()
 {
-    if ( !m_psem )
+    if ( !m_open )
         return 0;
 
     if ( sem_close( m_psem ) < 0 || sem_unlink( m_sem_name ) < 0 )
         return -1;
 
+    m_open = false;
     m_psem = null;
 
     return 0;

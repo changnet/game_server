@@ -1,7 +1,6 @@
 #include "CRuntimeStream.h"
 #include "gstypes.h"
-#include <cstdio>
-#include <cstdlib>
+#include "fatal.h"
 
 /**
  * @brief CRuntimeStream::CRuntimeStream
@@ -9,19 +8,28 @@
  */
 CRuntimeStream::CRuntimeStream( const char *file )
 {
-    m_file.open( file, std::ofstream::out | std::ofstream::app );
+    snprintf( m_path,MAX_RUNTIME_PATH_LEN,"%s",file );
+}
+
+/**
+ * @brief CRuntimeStream::open
+ * 打开日志文件
+ */
+void CRuntimeStream::open()
+{
+    m_file.open( m_path, std::ofstream::out | std::ofstream::app );
     if ( m_file.fail() ) //print why
     {
-        perror( "open runtime log file fail:" );
-        exit ( EXIT_FAILURE );
+        fatal( "open runtime stream file fail",errno );/* already exit　*/
+        return;
     }
 }
 
 /**
- * @brief CRuntimeStream::~CRuntimeStream
+ * @brief CRuntimeStream::close
  * 关闭文件
  */
-CRuntimeStream::~CRuntimeStream()
+void CRuntimeStream::close()
 {
     m_file.close();
 }
@@ -34,7 +42,10 @@ CRuntimeStream::~CRuntimeStream()
 CRuntimeStream &CRuntimeStream::operator << ( std::ostream& (*pf)(std::ostream&) )
 {
     pf( std::cerr );
+
+    open();
     m_file << "\n";
+    close();
 
     return *this;
 }

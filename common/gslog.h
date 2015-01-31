@@ -21,16 +21,20 @@
 // first i define INFO WARNING ERROR,buf libev conflict,say "some systems stupidly #define ERROR"
 // G mean GAME
 
-static CRuntimeStream runtime_stream( "runtime" );
-static CLogStream     warning_stream( "warning" );
-static CLogStream     error_stream  ( "error"   );
+/* 这是多进程，写到同一文件时未做同步，故需要保证各个进程文件名不同 */
+extern const char *RUNTIME_FILE;
+extern const char *WARNING_FILE;
+extern const char *ERROR_FILE;
 
-extern const char *ENGINE_NAME;
+static CRuntimeStream runtime_stream( RUNTIME_FILE );
+static CLogStream     warning_stream( WARNING_FILE );
+static CLogStream     error_stream  ( ERROR_FILE  );
+
 #define GINFO(x)      CLogger::instance()->message(x)
 #define GRUNTIME()    runtime_stream
 #define GWARNING()    (warning_stream << "[" << CUtility::instance()->str_time() \
-                            << getpid() << "-" << ENGINE_NAME << "]")
+                            << "-" << getpid() << "]")
 #define GERROR()      (error_stream << "[" << CUtility::instance()->str_time() \
-                            << getpid() << "-" << ENGINE_NAME << "]")
+                            << "-" << getpid() << "]")
 
 #endif // GSLOG_H

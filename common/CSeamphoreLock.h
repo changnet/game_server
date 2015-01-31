@@ -23,6 +23,7 @@ public:
     bool open( const char *name,int32 oflag,mode_t mode, uint32 value );
     int32 close();
 private:
+    bool m_open;
     sem_t *m_psem;
     char m_sem_name[SEM_NAME_LEN];
 };

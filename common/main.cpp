@@ -2,12 +2,15 @@
 #include <cstring>
 #include <cerrno>
 #include "gslog.h"
-
+#include "fatal.h"
 #include "CLogger.h"
 
 using namespace std;
 
-const char *ENGINE_NAME = "common";
+const char *ENGINE_NAME  = "common";
+const char *RUNTIME_FILE = "common_runtime";
+const char *WARNING_FILE = "common_warning";
+const char *ERROR_FILE   = "common_error";
 
 int main()
 {
@@ -32,6 +35,7 @@ int main()
     cout << sizeof( t ) << endl;
 
     GINFO("money.txt") << val1 << val2 << val3 << val4 << val5 << val6 << val7 << val8 << p << str;
+    fatal( "nothing" );
 
     return 0;
 }

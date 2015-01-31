@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 
+#define MAX_RUNTIME_PATH_LEN   128
+
 /**
  * @brief The CRuntimeStream class
  * 同时写入文件并在屏幕打印的输出流
@@ -20,8 +22,9 @@ public:
 
         std::cerr << t;
 
+        open();
         m_file << t;
-        m_file.flush();
+        close();
 
         return *this;
     }
@@ -29,9 +32,12 @@ public:
     CRuntimeStream &operator << ( std::ostream& (*pf)(std::ostream&) );
 
     explicit CRuntimeStream( const char *file );
-    ~CRuntimeStream();
+private:
+    void open();
+    void close();
 private:
     std::ofstream m_file;
+    char m_path[MAX_RUNTIME_PATH_LEN];
 };
 
 #endif // CRUNTIMESTREAM_H

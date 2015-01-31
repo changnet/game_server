@@ -4,18 +4,20 @@
 
 CSharedMemory::CSharedMemory()
 {
+    m_open = false;
     m_shm_fd = -1;
     m_shm_name[0] = '\0';
 }
 
 void CSharedMemory::close_shm()
 {
-    if ( m_shm_fd < 0 )
+    if ( !m_open )
         return;
 
     close( m_shm_fd );
     shm_unlink( m_shm_name );/* 本进程调用并不会影响其他进程 */
 
+    m_open = false;
     m_shm_fd = -1;
     m_shm_name[0] = '\0';
 
@@ -60,6 +62,8 @@ bool CSharedMemory::open_shm( const char *name, int32 oflag, mode_t mode )
 
         return false;
     }
+
+    m_open = true;
 
     return true;
 }

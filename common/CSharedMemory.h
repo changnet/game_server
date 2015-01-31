@@ -31,6 +31,7 @@ public:
     const char *get_shm_name();
 
 private:
+    bool m_open;
     int32 m_shm_fd;
     char m_shm_name[SHM_NAME_LEN];
 };

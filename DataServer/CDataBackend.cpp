@@ -32,8 +32,6 @@ void CDataBackend::start()
     m_loop_timer.start();
 
     ev_run( loop,0 );
-
-    m_log_worker.uninit();
 }
 
 /**
@@ -57,7 +55,7 @@ void CDataBackend::backend(ev::timer &w, int32 revents)
     double d = -9876980.93;
     float f = 998.6;
     uint32 u=777777777;
-    GINFO( "test.log" ) << "update ...." << ++m_counter << std::endl;
+    std::cout << "update ...." << ++m_counter << std::endl;
     GINFO( "test.log" ) << "update second ...." << i << "-" << d << "-" << f << "-" << u;
     m_log_worker.flush_log();
 }
@@ -68,6 +66,7 @@ void CDataBackend::backend(ev::timer &w, int32 revents)
  */
 void CDataBackend::stop()
 {
+    m_loop_timer.stop();
     on_exit();
 }
 
@@ -77,5 +76,5 @@ void CDataBackend::stop()
  */
 void CDataBackend::on_exit()
 {
-    m_log_worker.uninit();  /* 清理共享内存及信号量 */
+    //m_log_worker.uninit();  /* 清理共享内存及信号量 */
 }

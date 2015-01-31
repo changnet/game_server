@@ -27,6 +27,7 @@ void CLogBackend::start()
  */
 void CLogBackend::stop()
 {
+    m_log_timer.stop();
     on_exit();
 }
 

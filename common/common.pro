@@ -45,5 +45,6 @@ HEADERS += \
     gssignal.h \
     CLogStream.h \
     CRuntimeStream.h \
-    signal++.h
+    signal++.h \
+    fatal.h
 

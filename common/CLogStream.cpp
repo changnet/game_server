@@ -1,8 +1,6 @@
 #include "CLogStream.h"
 #include "gstypes.h"
-
-#include <cstdio>
-#include <cstdlib>
+#include "fatal.h"
 
 /**
  * @brief CLogStream::CLogStream
@@ -11,20 +9,28 @@
  */
 CLogStream::CLogStream(const char *file)
 {
-    m_file.open( file,std::ofstream::out | std::ofstream::app );
+    snprintf( m_path,MAX_LOG_PATH_LEN,"%s",file );
+}
 
+/**
+ * @brief CLogStream::open
+ * 打开日志文件
+ */
+void CLogStream::open()
+{
+    m_file.open( m_path, std::ofstream::out | std::ofstream::app );
     if ( m_file.fail() ) //print why
     {
-        perror( "open runtime log file fail:" );
-        exit ( EXIT_FAILURE );
+        fatal( "open runtime stream file fail",errno );/* already exit　*/
+        return;
     }
 }
 
 /**
- * @brief CLogStream::~CLogStream
+ * @brief CLogStream::close
  * 关闭文件
  */
-CLogStream::~CLogStream()
+void CLogStream::close()
 {
     m_file.close();
 }
@@ -42,7 +48,9 @@ CLogStream &CLogStream::operator << ( std::ostream& (*pf)(std::ostream&) )
     UNUSED( pf );    /* avoid warning Wunused */
 #endif
 
+    open();
     m_file << "\n";
+    close();
 
     return *this;
 }
